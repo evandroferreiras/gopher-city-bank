@@ -1,0 +1,22 @@
+info:
+  contact:
+    email: evandroferreiras@gmail.com
+    name: Evandro souza
+  license: {}
+  title: Gopher City Bank API
+  version: "1.0"
+paths:
+  /api/healthcheck:
+    get:
+      description: Returns true or false, depeding on the state of app.
+      responses:
+        "200":
+          description: WORKING
+          schema:
+            type: integer
+        "400":
+          description: NOT WORKING
+          schema:
+            type: integer
+      summary: IsOnline
+swagger: "2.0"
