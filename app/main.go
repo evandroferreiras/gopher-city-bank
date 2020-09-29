@@ -19,5 +19,5 @@ func main() {
 	h := api.NewHandler()
 	h.Register(v1)
 	h.RegisterSwagger(echo)
-	echo.Logger.Fatal(echo.Start("127.0.0.1:8585"))
+	echo.Logger.Fatal(echo.Start(":8585"))
 }
