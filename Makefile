@@ -1,3 +1,5 @@
+
+# Developer setup commands
 setup-githooks:
 	pip install pre-commit
 	pre-commit install
@@ -6,18 +8,31 @@ setup-githooks:
 
 setup-swag:
 	go get github.com/swaggo/swag/cmd/swag
+# ###########
 
-generage-swagger:
+# Localhost developing commands
+__generage-swagger:
 	swag init -d ./app
 
-run-go-critic:
+__run-go-critic:
 	gocritic check ./app/...
 
-run:generage-swagger
+run:__generage-swagger __run-go-critic
 	LOCAL_ENV=true go run ./app
 
-make test:
+make test: __run-go-critic
 	go test ./...
 
 generate-mocks:
 	go generate ./...
+# ###########
+
+# Docker commands
+docker-compose-build:
+	docker-compose --file ./docker/docker-compose.yaml build
+
+docker-compose-up:
+	docker-compose --file ./docker/docker-compose.yaml up
+
+# ###########
+
