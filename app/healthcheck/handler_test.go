@@ -38,7 +38,7 @@ func Test_IsOnline_ShouldReturnNotWorking_IfServiceIsNotWorking(t *testing.T) {
 	rec, ctx := getRecordedAndContext(echo.GET, "/api/healthcheck", nil)
 
 	assert.NoError(t, handler.IsOnline(ctx))
-	if assert.Equal(t, http.StatusOK, rec.Code) {
+	if assert.Equal(t, http.StatusBadRequest, rec.Code) {
 		assert.Equal(t, "NOT WORKING", rec.Body.String())
 	}
 }
