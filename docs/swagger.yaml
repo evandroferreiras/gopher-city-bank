@@ -11,7 +11,7 @@ definitions:
         example: status bad request
         type: string
     type: object
-  model.AccountCreated:
+  representation.AccountCreated:
     properties:
       balance:
         type: number
@@ -24,7 +24,7 @@ definitions:
       name:
         type: string
     type: object
-  model.NewAccount:
+  representation.NewAccount:
     properties:
       balance:
         type: number
@@ -58,14 +58,14 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/model.NewAccount'
+          $ref: '#/definitions/representation.NewAccount'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/model.AccountCreated'
+            $ref: '#/definitions/representation.AccountCreated'
         "400":
           description: Bad Request
           schema:

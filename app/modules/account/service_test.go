@@ -3,9 +3,11 @@ package account
 import (
 	"testing"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/model"
+	"github.com/evandroferreiras/gopher-city-bank/app/representation"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/evandroferreiras/gopher-city-bank/app/modules/account/mocks"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -18,13 +20,13 @@ func setupRepository() *mocks.Repository {
 
 func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T) {
 	repositoryMock := setupRepository()
-	account := &model.AccountCreated{
+	account := &model.Account{
 		ID:      1,
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Balance: 1000000,
 	}
-	newAccount := &model.NewAccount{
+	newAccount := &representation.NewAccount{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  "xxxxx",
@@ -40,7 +42,7 @@ func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T
 
 func Test_Create_ShouldReturnError_WhenCreateOnRepoWithError(t *testing.T) {
 	repositoryMock := setupRepository()
-	newAccount := &model.NewAccount{
+	newAccount := &representation.NewAccount{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  "xxxxx",
@@ -58,23 +60,23 @@ func Test_Create_ShouldHashSecret(t *testing.T) {
 	hashedSecret := hash.EncryptString(secret)
 
 	repositoryMock := setupRepository()
-	account := &model.AccountCreated{
+	account := &model.Account{
 		ID:      1,
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Balance: 1000000,
 	}
-	newAccount := &model.NewAccount{
+	newAccount := &representation.NewAccount{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  secret,
 		Balance: 1000000,
 	}
 
-	var capturedAccount model.NewAccount
+	var capturedAccount model.Account
 	repositoryMock.On("Create", mock.Anything).
 		Run(func(args mock.Arguments) {
-			capturedAccount = args.Get(0).(model.NewAccount)
+			capturedAccount = args.Get(0).(model.Account)
 		}).
 		Return(account, nil)
 

@@ -9,7 +9,7 @@ import (
 
 // Repository is an interface to Account repository
 type Repository interface {
-	Create(newAccount model.NewAccount) (*model.AccountCreated, error)
+	Create(newAccount model.Account) (*model.Account, error)
 }
 
 type repositoryImp struct {
@@ -20,15 +20,9 @@ func NewRepository() Repository {
 	return &repositoryImp{}
 }
 
-func (r *repositoryImp) Create(newAccount model.NewAccount) (*model.AccountCreated, error) {
+func (r *repositoryImp) Create(newAccount model.Account) (*model.Account, error) {
 
 	accountAdded := inmemorydb.AddAccountToMemoryDB(newAccount)
 
-	return &model.AccountCreated{
-		ID:        accountAdded.ID,
-		Name:      accountAdded.Name,
-		Cpf:       accountAdded.Cpf,
-		Balance:   accountAdded.Balance,
-		CreatedAt: accountAdded.CreatedAt,
-	}, nil
+	return &accountAdded, nil
 }

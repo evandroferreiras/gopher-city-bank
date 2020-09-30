@@ -48,7 +48,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.NewAccount"
+                            "$ref": "#/definitions/representation.NewAccount"
                         }
                     }
                 ],
@@ -56,7 +56,7 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.AccountCreated"
+                            "$ref": "#/definitions/representation.AccountCreated"
                         }
                     },
                     "400": {
@@ -107,7 +107,7 @@ var doc = `{
                 }
             }
         },
-        "model.AccountCreated": {
+        "representation.AccountCreated": {
             "type": "object",
             "properties": {
                 "balance": {
@@ -127,7 +127,7 @@ var doc = `{
                 }
             }
         },
-        "model.NewAccount": {
+        "representation.NewAccount": {
             "type": "object",
             "required": [
                 "cpf",
