@@ -1,4 +1,4 @@
-package api
+package server
 
 import (
 	"github.com/evandroferreiras/gopher-city-bank/app/common/log"

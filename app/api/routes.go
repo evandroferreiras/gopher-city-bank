@@ -11,6 +11,9 @@ import (
 func (h *Handler) Register(v1 *echo.Group) {
 	healthCheck := v1.Group("/healthcheck")
 	healthCheck.GET("", h.healthCheck.IsOnline)
+
+	accounts := v1.Group("/accounts")
+	accounts.POST("", h.account.CreateAccount)
 }
 
 // RegisterSwagger sets the route to swagger documentations

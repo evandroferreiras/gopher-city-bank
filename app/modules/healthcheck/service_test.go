@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/healthcheck/mocks"
+	"github.com/evandroferreiras/gopher-city-bank/app/modules/healthcheck/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
