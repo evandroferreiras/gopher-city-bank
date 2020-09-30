@@ -18,11 +18,10 @@ func setupRepository() *mocks.Repository {
 
 func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T) {
 	repositoryMock := setupRepository()
-	account := &model.Account{
+	account := &model.AccountCreated{
 		ID:      1,
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
-		Secret:  "xxxxx",
 		Balance: 1000000,
 	}
 	newAccount := &model.NewAccount{
@@ -59,11 +58,10 @@ func Test_Create_ShouldHashSecret(t *testing.T) {
 	hashedSecret := hash.EncryptString(secret)
 
 	repositoryMock := setupRepository()
-	account := &model.Account{
+	account := &model.AccountCreated{
 		ID:      1,
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
-		Secret:  secret,
 		Balance: 1000000,
 	}
 	newAccount := &model.NewAccount{

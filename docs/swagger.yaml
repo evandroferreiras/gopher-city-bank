@@ -11,6 +11,19 @@ definitions:
         example: status bad request
         type: string
     type: object
+  model.AccountCreated:
+    properties:
+      balance:
+        type: number
+      cpf:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   model.NewAccount:
     properties:
       balance:
@@ -22,7 +35,6 @@ definitions:
       secret:
         type: string
     required:
-    - balance
     - cpf
     - name
     - secret
@@ -50,7 +62,10 @@ paths:
       produces:
       - application/json
       responses:
-        "201": {}
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.AccountCreated'
         "400":
           description: Bad Request
           schema:

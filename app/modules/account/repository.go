@@ -3,14 +3,13 @@
 package account
 
 import (
-	"time"
-
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
+	"github.com/evandroferreiras/gopher-city-bank/app/model/inmemorydb"
 )
 
 // Repository is an interface to Account repository
 type Repository interface {
-	Create(newAccount model.NewAccount) (*model.Account, error)
+	Create(newAccount model.NewAccount) (*model.AccountCreated, error)
 }
 
 type repositoryImp struct {
@@ -21,20 +20,15 @@ func NewRepository() Repository {
 	return &repositoryImp{}
 }
 
-func (r *repositoryImp) Create(newAccount model.NewAccount) (*model.Account, error) {
-	db := model.GetAccountsMemoryDB()
-	idx := len(db)
+func (r *repositoryImp) Create(newAccount model.NewAccount) (*model.AccountCreated, error) {
 
-	account := model.Account{
-		ID:        idx + 1,
-		Name:      newAccount.Name,
-		Cpf:       newAccount.Cpf,
-		Secret:    newAccount.Secret,
-		Balance:   newAccount.Balance,
-		CreatedAt: time.Now(),
-	}
+	accountAdded := inmemorydb.AddAccountToMemoryDB(newAccount)
 
-	db[idx] = account
-
-	return &account, nil
+	return &model.AccountCreated{
+		ID:        accountAdded.ID,
+		Name:      accountAdded.Name,
+		Cpf:       accountAdded.Cpf,
+		Balance:   accountAdded.Balance,
+		CreatedAt: accountAdded.CreatedAt,
+	}, nil
 }

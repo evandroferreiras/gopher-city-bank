@@ -28,7 +28,7 @@ func NewHandler() *Handler {
 // @Accept  json
 // @Produce  json
 // @Param account body model.NewAccount true "Add account"
-// @Success 201
+// @Success 201 {object} model.AccountCreated
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/accounts [post]
 // CreateAccount is a creator an account

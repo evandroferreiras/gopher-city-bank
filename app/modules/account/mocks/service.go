@@ -13,15 +13,15 @@ type Service struct {
 }
 
 // Create provides a mock function with given fields: _a0
-func (_m *Service) Create(_a0 model.NewAccount) (*model.Account, error) {
+func (_m *Service) Create(_a0 model.NewAccount) (*model.AccountCreated, error) {
 	ret := _m.Called(_a0)
 
-	var r0 *model.Account
-	if rf, ok := ret.Get(0).(func(model.NewAccount) *model.Account); ok {
+	var r0 *model.AccountCreated
+	if rf, ok := ret.Get(0).(func(model.NewAccount) *model.AccountCreated); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Account)
+			r0 = ret.Get(0).(*model.AccountCreated)
 		}
 	}
 

@@ -13,15 +13,15 @@ type Repository struct {
 }
 
 // Create provides a mock function with given fields: newAccount
-func (_m *Repository) Create(newAccount model.NewAccount) (*model.Account, error) {
+func (_m *Repository) Create(newAccount model.NewAccount) (*model.AccountCreated, error) {
 	ret := _m.Called(newAccount)
 
-	var r0 *model.Account
-	if rf, ok := ret.Get(0).(func(model.NewAccount) *model.Account); ok {
+	var r0 *model.AccountCreated
+	if rf, ok := ret.Get(0).(func(model.NewAccount) *model.AccountCreated); ok {
 		r0 = rf(newAccount)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Account)
+			r0 = ret.Get(0).(*model.AccountCreated)
 		}
 	}
 

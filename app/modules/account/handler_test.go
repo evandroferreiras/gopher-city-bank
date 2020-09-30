@@ -21,11 +21,10 @@ func setupService() *mocks.Service {
 
 func Test_CreateAccount_ShouldReturnStatusCreated_WhenCreateWithSuccess(t *testing.T) {
 	serviceMock := setupService()
-	account := &model.Account{
+	account := &model.AccountCreated{
 		ID:      1,
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
-		Secret:  "xxxxx",
 		Balance: 1000000,
 	}
 	serviceMock.On("Create", mock.Anything).Return(account, nil)
@@ -104,4 +103,27 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenCantCreateAnAccount(t *testin
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	m := testutils.ResponseToMap(rec.Body.Bytes())
 	assert.Equal(t, "some error", m["message"])
+}
+
+func Test_CreateAccount_ShouldReturnBadRequest_WhenBalanceIsLessThanZero(t *testing.T) {
+	serviceMock := setupService()
+	serviceMock.On("Create", mock.Anything).Return(nil, errors.New("some error"))
+
+	reqJSON := `{
+				  "balance": -1,
+				  "cpf": "12345612",
+				  "name": "Bruce Wayne",
+				  "secret": "xxxxx"
+				}
+				`
+	rec, ctx := testutils.GetRecordedAndContext(echo.POST, "/api/accounts", strings.NewReader(reqJSON))
+	handler := Handler{AccountService: serviceMock}
+	assert.NoError(t, handler.CreateAccount(ctx))
+
+	t.Log(rec.Body.String())
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, httputil.HTTPErrorValidateBody.Message, m["message"])
+
 }
