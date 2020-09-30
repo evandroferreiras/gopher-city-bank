@@ -3,8 +3,9 @@ package account
 import (
 	"net/http"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/representation"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/common/httputil"
-	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )
@@ -27,13 +28,13 @@ func NewHandler() *Handler {
 // @tags accounts
 // @Accept  json
 // @Produce  json
-// @Param account body model.NewAccount true "Add account"
-// @Success 201 {object} model.AccountCreated
+// @Param account body representation.NewAccount true "Add account"
+// @Success 201 {object} representation.AccountCreated
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/accounts [post]
 // CreateAccount is a creator an account
 func (h *Handler) CreateAccount(c echo.Context) error {
-	account := &model.NewAccount{}
+	account := &representation.NewAccount{}
 
 	if err := c.Bind(account); err != nil {
 		logrus.Error(err)

@@ -19,7 +19,7 @@ func GetAccountsMemoryDB() map[int]model.Account {
 }
 
 // AddAccountToMemoryDB adds an account to the inmemorydatabase
-func AddAccountToMemoryDB(newAccount model.NewAccount) model.Account {
+func AddAccountToMemoryDB(newAccount model.Account) model.Account {
 	db := GetAccountsMemoryDB()
 	idx := len(db)
 

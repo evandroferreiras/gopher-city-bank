@@ -30,7 +30,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.NewAccount"
+                            "$ref": "#/definitions/representation.NewAccount"
                         }
                     }
                 ],
@@ -38,7 +38,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.AccountCreated"
+                            "$ref": "#/definitions/representation.AccountCreated"
                         }
                     },
                     "400": {
@@ -89,7 +89,7 @@
                 }
             }
         },
-        "model.AccountCreated": {
+        "representation.AccountCreated": {
             "type": "object",
             "properties": {
                 "balance": {
@@ -109,7 +109,7 @@
                 }
             }
         },
-        "model.NewAccount": {
+        "representation.NewAccount": {
             "type": "object",
             "required": [
                 "cpf",
