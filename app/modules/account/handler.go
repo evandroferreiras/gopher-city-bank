@@ -45,7 +45,7 @@ func (h *Handler) CreateAccount(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, httputil.NewHTTPErrorValidateBody(err))
 	}
 
-	newAccount, err := h.AccountService.Create(account)
+	newAccount, err := h.AccountService.Create(*account)
 	if err != nil {
 		logrus.Error(err)
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))

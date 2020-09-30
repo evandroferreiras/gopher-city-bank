@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 // Account struct to illustrate full object
 type Account struct {
@@ -18,4 +21,15 @@ type NewAccount struct {
 	Cpf     string  `bson:"cpf" json:"cpf" validate:"required"`
 	Secret  string  `bson:"secret" json:"secret" validate:"required"`
 	Balance float64 `bson:"balance" json:"balance" validate:"required"`
+}
+
+var memoryDatabase map[int]Account
+var once sync.Once
+
+// GetAccountsMemoryDB returns a map of Accounts.
+func GetAccountsMemoryDB() map[int]Account {
+	once.Do(func() {
+		memoryDatabase = make(map[int]Account)
+	})
+	return memoryDatabase
 }

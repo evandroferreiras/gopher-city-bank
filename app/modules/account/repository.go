@@ -2,9 +2,15 @@
 
 package account
 
+import (
+	"time"
+
+	"github.com/evandroferreiras/gopher-city-bank/app/model"
+)
+
 // Repository is an interface to Account repository
 type Repository interface {
-	Ping() (bool, error)
+	Create(newAccount model.NewAccount) (*model.Account, error)
 }
 
 type repositoryImp struct {
@@ -15,6 +21,20 @@ func NewRepository() Repository {
 	return &repositoryImp{}
 }
 
-func (r *repositoryImp) Ping() (bool, error) {
-	return true, nil
+func (r *repositoryImp) Create(newAccount model.NewAccount) (*model.Account, error) {
+	db := model.GetAccountsMemoryDB()
+	idx := len(db)
+
+	account := model.Account{
+		ID:        idx + 1,
+		Name:      newAccount.Name,
+		Cpf:       newAccount.Cpf,
+		Secret:    newAccount.Secret,
+		Balance:   newAccount.Balance,
+		CreatedAt: time.Now(),
+	}
+
+	db[idx] = account
+
+	return &account, nil
 }
