@@ -29,6 +29,32 @@ var doc = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/api/accounts": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Get all accounts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/representation.AccountsList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Creates a new account",
                 "consumes": [
@@ -48,7 +74,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/representation.NewAccount"
+                            "$ref": "#/definitions/representation.NewAccountBody"
                         }
                     }
                 ],
@@ -56,7 +82,7 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/representation.AccountCreated"
+                            "$ref": "#/definitions/representation.AccountResponse"
                         }
                     },
                     "400": {
@@ -107,7 +133,7 @@ var doc = `{
                 }
             }
         },
-        "representation.AccountCreated": {
+        "representation.AccountResponse": {
             "type": "object",
             "properties": {
                 "balance": {
@@ -127,7 +153,21 @@ var doc = `{
                 }
             }
         },
-        "representation.NewAccount": {
+        "representation.AccountsList": {
+            "type": "object",
+            "properties": {
+                "accounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/representation.AccountResponse"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "representation.NewAccountBody": {
             "type": "object",
             "required": [
                 "cpf",

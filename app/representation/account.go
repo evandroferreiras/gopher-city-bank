@@ -41,8 +41,8 @@ func (n *NewAccountBody) ToModel() model.Account {
 	}
 }
 
-// ModelToAccountCreated converts Account model to AccountResponse representation
-func ModelToAccountCreated(a *model.Account) *AccountResponse {
+// ModelToAccountResponse converts Account model to AccountResponse representation
+func ModelToAccountResponse(a *model.Account) *AccountResponse {
 	return &AccountResponse{
 		ID:        a.ID,
 		Name:      a.Name,
