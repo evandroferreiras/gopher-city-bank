@@ -10,7 +10,7 @@ import (
 
 // Service is an interface to Account service
 type Service interface {
-	Create(model.NewAccount) (*model.Account, error)
+	Create(model.NewAccount) (*model.AccountCreated, error)
 }
 
 type serviceImp struct {
@@ -25,7 +25,7 @@ func NewService() Service {
 }
 
 // Create a new account.
-func (s *serviceImp) Create(newAccount model.NewAccount) (*model.Account, error) {
+func (s *serviceImp) Create(newAccount model.NewAccount) (*model.AccountCreated, error) {
 
 	newAccount = encryptSecret(newAccount)
 

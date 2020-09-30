@@ -53,7 +53,12 @@ var doc = `{
                     }
                 ],
                 "responses": {
-                    "201": {},
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.AccountCreated"
+                        }
+                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -102,10 +107,29 @@ var doc = `{
                 }
             }
         },
+        "model.AccountCreated": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number"
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.NewAccount": {
             "type": "object",
             "required": [
-                "balance",
                 "cpf",
                 "name",
                 "secret"
