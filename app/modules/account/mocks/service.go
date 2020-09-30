@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	representation "github.com/evandroferreiras/gopher-city-bank/app/representation"
+	model "github.com/evandroferreiras/gopher-city-bank/app/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,20 +13,20 @@ type Service struct {
 }
 
 // Create provides a mock function with given fields: _a0
-func (_m *Service) Create(_a0 representation.NewAccount) (*representation.AccountCreated, error) {
+func (_m *Service) Create(_a0 model.Account) (*model.Account, error) {
 	ret := _m.Called(_a0)
 
-	var r0 *representation.AccountCreated
-	if rf, ok := ret.Get(0).(func(representation.NewAccount) *representation.AccountCreated); ok {
+	var r0 *model.Account
+	if rf, ok := ret.Get(0).(func(model.Account) *model.Account); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*representation.AccountCreated)
+			r0 = ret.Get(0).(*model.Account)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(representation.NewAccount) error); ok {
+	if rf, ok := ret.Get(1).(func(model.Account) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)

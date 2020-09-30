@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/representation"
+	"github.com/evandroferreiras/gopher-city-bank/app/model"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/httputil"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/testutils"
@@ -22,7 +22,7 @@ func setupService() *mocks.Service {
 
 func Test_CreateAccount_ShouldReturnStatusCreated_WhenCreateWithSuccess(t *testing.T) {
 	serviceMock := setupService()
-	account := &representation.AccountCreated{
+	account := &model.Account{
 		ID:      1,
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",

@@ -6,16 +6,16 @@ import (
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 )
 
-// NewAccount struct to illustrate post body
-type NewAccount struct {
+// NewAccountBody struct to illustrate post body
+type NewAccountBody struct {
 	Name    string  `bson:"name" json:"name" validate:"required"`
 	Cpf     string  `bson:"cpf" json:"cpf" validate:"required"`
 	Secret  string  `bson:"secret" json:"secret" validate:"required"`
 	Balance float64 `bson:"balance" json:"balance" validate:"gte=0"`
 }
 
-// AccountCreated struct to illustrated created account
-type AccountCreated struct {
+// AccountResponse struct to illustrated account response
+type AccountResponse struct {
 	ID        int       `bson:"_id" json:"id" `
 	Name      string    `bson:"name" json:"name"`
 	Cpf       string    `bson:"cpf" json:"cpf"`
@@ -23,8 +23,14 @@ type AccountCreated struct {
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }
 
-// ToModel converts NewAccount representation struct to Account Model
-func (n *NewAccount) ToModel() model.Account {
+// AccountsList struct to illustrate list of accounts
+type AccountsList struct {
+	Accounts []AccountResponse `bson:"accounts" json:"accounts"`
+	Count    int               `bson:"count" json:"count"`
+}
+
+// ToModel converts NewAccountBody representation struct to Account Model
+func (n *NewAccountBody) ToModel() model.Account {
 	return model.Account{
 		ID:        0,
 		Name:      n.Name,
@@ -35,9 +41,9 @@ func (n *NewAccount) ToModel() model.Account {
 	}
 }
 
-// ModelToAccountCreated converts Account model to AccountCreated representation
-func ModelToAccountCreated(a *model.Account) *AccountCreated {
-	return &AccountCreated{
+// ModelToAccountCreated converts Account model to AccountResponse representation
+func ModelToAccountCreated(a *model.Account) *AccountResponse {
+	return &AccountResponse{
 		ID:        a.ID,
 		Name:      a.Name,
 		Cpf:       a.Cpf,

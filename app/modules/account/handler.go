@@ -28,13 +28,13 @@ func NewHandler() *Handler {
 // @tags accounts
 // @Accept  json
 // @Produce  json
-// @Param account body representation.NewAccount true "Add account"
-// @Success 201 {object} representation.AccountCreated
+// @Param account body representation.NewAccountBody true "Add account"
+// @Success 201 {object} representation.AccountResponse
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/accounts [post]
 // CreateAccount is a creator an account
 func (h *Handler) CreateAccount(c echo.Context) error {
-	account := &representation.NewAccount{}
+	account := &representation.NewAccountBody{}
 
 	if err := c.Bind(account); err != nil {
 		logrus.Error(err)
@@ -46,10 +46,10 @@ func (h *Handler) CreateAccount(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, httputil.NewHTTPErrorValidateBody(err))
 	}
 
-	newAccount, err := h.AccountService.Create(*account)
+	createdAccount, err := h.AccountService.Create(account.ToModel())
 	if err != nil {
 		logrus.Error(err)
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
 	}
-	return c.JSON(http.StatusCreated, newAccount)
+	return c.JSON(http.StatusCreated, representation.ModelToAccountCreated(createdAccount))
 }
