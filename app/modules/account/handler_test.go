@@ -128,3 +128,29 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenBalanceIsLessThanZero(t *test
 	assert.Equal(t, httputil.HTTPErrorValidateBody.Message, m["message"])
 
 }
+
+func Test_GetAllAccounts_ShouldReturnStatusOk_WhenReturnWithSuccess(t *testing.T) {
+	serviceMock := setupService()
+	serviceMock.On("GetAccounts").Return([]model.Account{{ID: 1}, {ID: 2}}, nil)
+	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts", nil)
+	handler := Handler{AccountService: serviceMock}
+	assert.NoError(t, handler.GetAllAccounts(ctx))
+
+	t.Log(rec.Body.String())
+	assert.Equal(t, http.StatusOK, rec.Code)
+	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, float64(1), m["accounts"].([]interface{})[0].(map[string]interface{})["id"])
+	assert.Equal(t, float64(2), m["accounts"].([]interface{})[1].(map[string]interface{})["id"])
+	assert.Equal(t, float64(2), m["count"])
+}
+
+func Test_GetAllAccounts_ShouldReturnBadRequest_WhenGotError(t *testing.T) {
+	serviceMock := setupService()
+	serviceMock.On("GetAccounts").Return(nil, errors.New("some error"))
+	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts", nil)
+	handler := Handler{AccountService: serviceMock}
+
+	assert.NoError(t, handler.GetAllAccounts(ctx))
+	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, "some error", m["message"])
+}

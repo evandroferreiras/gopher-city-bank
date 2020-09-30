@@ -83,3 +83,24 @@ func Test_Create_ShouldHashSecret(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, hashedSecret, capturedAccount.Secret)
 }
+
+func Test_GetAccounts_ShouldReturnList_WhenGetFromRepoWithSuccess(t *testing.T) {
+	repositoryMock := setupRepository()
+
+	mockAccounts := []model.Account{{}}
+	repositoryMock.On("GetAccounts").Return(mockAccounts, nil)
+
+	service := serviceImp{repository: repositoryMock}
+	accounts, err := service.GetAccounts()
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(accounts))
+}
+
+func Test_GetAccounts_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
+	repositoryMock := setupRepository()
+	repositoryMock.On("GetAccounts").Return(nil, errors.New("Some error"))
+
+	service := serviceImp{repository: repositoryMock}
+	_, err := service.GetAccounts()
+	assert.EqualError(t, errors.Cause(err), "Some error")
+}

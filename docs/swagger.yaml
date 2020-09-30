@@ -11,7 +11,7 @@ definitions:
         example: status bad request
         type: string
     type: object
-  representation.AccountCreated:
+  representation.AccountResponse:
     properties:
       balance:
         type: number
@@ -24,7 +24,16 @@ definitions:
       name:
         type: string
     type: object
-  representation.NewAccount:
+  representation.AccountsList:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/representation.AccountResponse'
+        type: array
+      count:
+        type: integer
+    type: object
+  representation.NewAccountBody:
     properties:
       balance:
         type: number
@@ -48,6 +57,23 @@ info:
   version: "1.0"
 paths:
   /api/accounts:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/representation.AccountsList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Get all accounts
+      tags:
+      - accounts
     post:
       consumes:
       - application/json
@@ -58,14 +84,14 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/representation.NewAccount'
+          $ref: '#/definitions/representation.NewAccountBody'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/representation.AccountCreated'
+            $ref: '#/definitions/representation.AccountResponse'
         "400":
           description: Bad Request
           schema:
