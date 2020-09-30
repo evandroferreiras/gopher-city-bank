@@ -3,10 +3,8 @@ package account
 import (
 	"testing"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/evandroferreiras/gopher-city-bank/app/representation"
-
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
+	"github.com/evandroferreiras/gopher-city-bank/app/model"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/modules/account/mocks"
 	"github.com/pkg/errors"
@@ -26,7 +24,7 @@ func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T
 		Cpf:     "12345612",
 		Balance: 1000000,
 	}
-	newAccount := &representation.NewAccount{
+	newAccount := &model.Account{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  "xxxxx",
@@ -42,7 +40,7 @@ func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T
 
 func Test_Create_ShouldReturnError_WhenCreateOnRepoWithError(t *testing.T) {
 	repositoryMock := setupRepository()
-	newAccount := &representation.NewAccount{
+	newAccount := &model.Account{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  "xxxxx",
@@ -66,7 +64,7 @@ func Test_Create_ShouldHashSecret(t *testing.T) {
 		Cpf:     "12345612",
 		Balance: 1000000,
 	}
-	newAccount := &representation.NewAccount{
+	newAccount := &model.Account{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  secret,
