@@ -1,11 +1,63 @@
+definitions:
+  httputil.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      error:
+        example: status bad request
+        type: string
+      message:
+        example: status bad request
+        type: string
+    type: object
+  model.NewAccount:
+    properties:
+      balance:
+        type: number
+      cpf:
+        type: string
+      name:
+        type: string
+      secret:
+        type: string
+    required:
+    - balance
+    - cpf
+    - name
+    - secret
+    type: object
 info:
   contact:
     email: evandroferreiras@gmail.com
-    name: Evandro souza
+    name: Evandro Souza
   license: {}
   title: Gopher City Bank API
   version: "1.0"
 paths:
+  /api/accounts:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new account
+      parameters:
+      - description: Add account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/model.NewAccount'
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Create account
+      tags:
+      - accounts
   /api/healthcheck:
     get:
       description: Returns true or false, depeding on the state of app.

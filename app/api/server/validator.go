@@ -1,4 +1,4 @@
-package api
+package server
 
 import (
 	"gopkg.in/go-playground/validator.v9"
