@@ -3,9 +3,11 @@ package account
 import (
 	"testing"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/evandroferreiras/gopher-city-bank/app/modules/account/mocks"
-	errors "github.com/pkg/errors"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -50,4 +52,36 @@ func Test_Create_ShouldReturnError_WhenCreateOnRepoWithError(t *testing.T) {
 	service := serviceImp{repository: repositoryMock}
 	_, err := service.Create(*newAccount)
 	assert.EqualError(t, errors.Cause(err), "Some error")
+}
+
+func Test_Create_ShouldHashSecret(t *testing.T) {
+	secret := "ihatejoker"
+	hashedSecret := hash.EncryptString(secret)
+
+	repositoryMock := setupRepository()
+	account := &model.Account{
+		ID:      1,
+		Name:    "Bruce Wayne",
+		Cpf:     "12345612",
+		Secret:  secret,
+		Balance: 1000000,
+	}
+	newAccount := &model.NewAccount{
+		Name:    "Bruce Wayne",
+		Cpf:     "12345612",
+		Secret:  secret,
+		Balance: 1000000,
+	}
+
+	var capturedAccount model.NewAccount
+	repositoryMock.On("Create", mock.Anything).
+		Run(func(args mock.Arguments) {
+			capturedAccount = args.Get(0).(model.NewAccount)
+		}).
+		Return(account, nil)
+
+	service := serviceImp{repository: repositoryMock}
+	_, err := service.Create(*newAccount)
+	assert.NoError(t, err)
+	assert.Equal(t, hashedSecret, capturedAccount.Secret)
 }
