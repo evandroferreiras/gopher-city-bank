@@ -3,6 +3,8 @@ package account
 import (
 	"testing"
 
+	serviceError "github.com/evandroferreiras/gopher-city-bank/app/common/service"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 
@@ -125,4 +127,15 @@ func Test_GetAccount_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
 	_, err := service.GetAccount(account.ID)
 
 	assert.EqualError(t, errors.Cause(err), "some error")
+}
+
+func Test_GetAccount_ShouldReturnNotFoundError_WhenAccountFromRepoIsNil(t *testing.T) {
+	repositoryMock := setupRepository()
+	repositoryMock.On("GetAccount", "1").Return(nil, nil)
+
+	service := serviceImp{repository: repositoryMock}
+	_, err := service.GetAccount("1")
+
+	assert.EqualError(t, errors.Cause(err), serviceError.ErrorNotFound.Error())
+
 }
