@@ -16,6 +16,9 @@ func (h *Handler) Register(v1 *echo.Group) {
 	accounts.POST("", h.account.CreateAccount)
 	accounts.GET("", h.account.GetAllAccounts)
 	accounts.GET("/:account_id/balance", h.account.GetAccountBalance)
+
+	login := v1.Group("/login")
+	login.POST("", h.login.SignIn)
 }
 
 // RegisterSwagger sets the route to swagger documentations

@@ -38,14 +38,9 @@ func NewHandler() *Handler {
 func (h *Handler) CreateAccount(c echo.Context) error {
 	account := &representation.NewAccountBody{}
 
-	if err := c.Bind(account); err != nil {
-		logrus.Error(err)
-		return c.JSON(http.StatusBadRequest, httputil.HTTPErrorParseBody)
-	}
-
-	if err := c.Validate(account); err != nil {
-		logrus.Error(err)
-		return c.JSON(http.StatusBadRequest, httputil.NewHTTPErrorValidateBody(err))
+	valid, err := httputil.IsValid(c, account)
+	if err != nil || !valid {
+		return err
 	}
 
 	createdAccount, err := h.AccountService.Create(account.ToModel())

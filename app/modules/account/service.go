@@ -34,7 +34,7 @@ func (s *serviceImp) Create(account model.Account) (*model.Account, error) {
 	account = encryptSecret(account)
 	createdAccount, err := s.repository.Create(account)
 	if err != nil {
-		return nil, errors.Wrap(err, "an error occurred when trying to create createdAccount")
+		return nil, errors.Wrap(err, "an error occurred when trying to create account")
 	}
 	return createdAccount, nil
 }
