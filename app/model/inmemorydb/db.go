@@ -63,3 +63,14 @@ func GetAccount(id string) *model.Account {
 	}
 	return nil
 }
+
+// GetAccountByCpf returns an account given an cpf
+func GetAccountByCpf(cpf string) *model.Account {
+	db := GetMemoryDB()
+	for _, account := range db.accounts {
+		if account.Cpf == cpf {
+			return &account
+		}
+	}
+	return nil
+}

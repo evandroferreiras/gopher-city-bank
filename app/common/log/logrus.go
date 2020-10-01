@@ -2,8 +2,8 @@ package log
 
 import (
 	"os"
-	"strconv"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/envvar"
 	echoLog "github.com/labstack/gommon/log"
 	echoLogrus "github.com/neko-neko/echo-logrus/v2/log"
 	"github.com/sirupsen/logrus"
@@ -11,7 +11,7 @@ import (
 )
 
 func getFormatter() logrus.Formatter {
-	if isLocalEnv, _ := strconv.ParseBool(os.Getenv("LOCAL_ENV")); isLocalEnv {
+	if isLocalEnv := envvar.IsLocalEnv(); isLocalEnv {
 		return &prefixed.TextFormatter{
 			ForceFormatting: true,
 		}

@@ -18,7 +18,7 @@ __run-go-critic:
 	gocritic check ./app/...
 
 run:__generage-swagger __run-go-critic
-	LOCAL_ENV=true go run ./app
+	JWT_SIGNING_KEY=batman LOCAL_ENV=true go run ./app
 
 make test: __run-go-critic
 	go test ./...

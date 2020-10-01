@@ -42,6 +42,21 @@ definitions:
       count:
         type: integer
     type: object
+  representation.LoginBody:
+    properties:
+      cpf:
+        type: string
+      secret:
+        type: string
+    required:
+    - cpf
+    - secret
+    type: object
+  representation.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
   representation.NewAccountBody:
     properties:
       balance:
@@ -145,4 +160,34 @@ paths:
           schema:
             type: integer
       summary: IsOnline
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: SignIn for existing user
+      parameters:
+      - description: Credentials to use
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/representation.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/representation.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: SignIn for existing user
+      tags:
+      - login
 swagger: "2.0"

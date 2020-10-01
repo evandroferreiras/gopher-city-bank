@@ -14,12 +14,12 @@ This is the Gopher ~~Gotham~~ Bank City app.
 - Mockery
 - Docker
 
-## Environment Variable
+## Environment Variables
 
 | Variable | values           | Description |
 | -------- | ---------------- | ----------- |
-| LOCAL_ENV |  `true`/`false` | Identify if your running localhost, so the logs will be more friendly |
-
+| LOCAL_ENV |  `boolean` | Identify if your running localhost, so the logs will be more friendly |
+| JWT_SIGNING_KEY | `string`  | Secret key used to encrypt Jwt |
 
 ## Usage
 
