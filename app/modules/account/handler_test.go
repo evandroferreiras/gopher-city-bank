@@ -1,10 +1,12 @@
 package account
 
 import (
-	"errors"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/pkg/errors"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 
@@ -124,6 +126,7 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenBalanceIsLessThanZero(t *test
 
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	m := testutils.ResponseToMap(rec.Body.Bytes())
+
 	assert.Equal(t, httputil.HTTPErrorValidateBody.Message, m["message"])
 
 }
@@ -151,6 +154,7 @@ func Test_GetAllAccounts_ShouldReturnBadRequest_WhenGotError(t *testing.T) {
 
 	assert.NoError(t, handler.GetAllAccounts(ctx))
 	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Equal(t, "some error", m["message"])
 }
 
@@ -185,5 +189,25 @@ func Test_GetAccountBalance_ShouldReturnBadRequest_WhenGotError(t *testing.T) {
 	assert.NoError(t, handler.GetAccountBalance(ctx))
 	t.Log(rec.Body.String())
 	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+
 	assert.Equal(t, "some error", m["message"])
+}
+
+func Test_GetAccountBalance_ShouldReturnNotFound_WhenGotNotFoundError(t *testing.T) {
+	accountID := "1"
+
+	serviceMock := setupService()
+	serviceMock.On("GetAccount", accountID).Return(nil, errors.Wrap(service.ErrorNotFound, "some error"))
+	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts/:account_id/balance", nil)
+	ctx.SetParamNames("account_id")
+	ctx.SetParamValues(accountID)
+
+	handler := Handler{AccountService: serviceMock}
+	assert.NoError(t, handler.GetAccountBalance(ctx))
+	t.Log(rec.Body.String())
+
+	assert.Equal(t, http.StatusNotFound, rec.Code)
+	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, "some error: not found", m["message"])
 }

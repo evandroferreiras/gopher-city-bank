@@ -3,6 +3,9 @@ package account
 import (
 	"net/http"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/pkg/errors"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/representation"
@@ -75,6 +78,7 @@ func (h *Handler) GetAllAccounts(c echo.Context) error {
 // @Param account_id path string true "ID of the account to get"
 // @Success 200 {object} representation.AccountBalanceResponse
 // @Failure 400 {object} httputil.HTTPError
+// @Failure 404 {object} httputil.HTTPError
 // @Router /api/accounts/{account_id}/balance [get]
 // GetAccountBalance returns the account balance
 func (h *Handler) GetAccountBalance(c echo.Context) error {
@@ -82,7 +86,11 @@ func (h *Handler) GetAccountBalance(c echo.Context) error {
 
 	account, err := h.AccountService.GetAccount(accountID)
 	if err != nil {
-		return badRequestError(c, err)
+		logrus.Error(err)
+		if errors.Cause(err) == service.ErrorNotFound {
+			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
+		}
+		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
 	}
 
 	return c.JSON(http.StatusOK, representation.ModelToAccountBalanceResponse(account))

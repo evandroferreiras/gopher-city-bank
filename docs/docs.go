@@ -127,6 +127,12 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/httputil.HTTPError"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
                     }
                 }
             }

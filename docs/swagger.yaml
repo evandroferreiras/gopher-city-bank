@@ -144,6 +144,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
       summary: Get account balance information
       tags:
       - accounts

@@ -5,6 +5,8 @@ package account
 import (
 	"fmt"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/pkg/errors"
@@ -54,6 +56,10 @@ func (s *serviceImp) GetAccount(id string) (*model.Account, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("an error ocurren when trying to get account %v", id))
 	}
+	if account == nil {
+		return nil, errors.Wrap(service.ErrorNotFound, "account")
+	}
+
 	return account, nil
 }
 
