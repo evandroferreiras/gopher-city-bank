@@ -23,7 +23,7 @@ func setupService() *mocks.Service {
 func Test_CreateAccount_ShouldReturnStatusCreated_WhenCreateWithSuccess(t *testing.T) {
 	serviceMock := setupService()
 	account := &model.Account{
-		ID:      1,
+		ID:      "1",
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Balance: 1000000,
@@ -44,9 +44,8 @@ func Test_CreateAccount_ShouldReturnStatusCreated_WhenCreateWithSuccess(t *testi
 	t.Log(rec.Body.String())
 	if assert.Equal(t, http.StatusCreated, rec.Code) {
 		m := testutils.ResponseToMap(rec.Body.Bytes())
-		assert.Equal(t, float64(1), m["id"])
+		assert.Equal(t, "1", m["id"])
 		assert.Equal(t, "Bruce Wayne", m["name"])
-		assert.Equal(t, float64(1000000), m["balance"])
 	}
 }
 
@@ -131,7 +130,7 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenBalanceIsLessThanZero(t *test
 
 func Test_GetAllAccounts_ShouldReturnStatusOk_WhenReturnWithSuccess(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAccounts").Return([]model.Account{{ID: 1}, {ID: 2}}, nil)
+	serviceMock.On("GetAccounts").Return([]model.Account{{ID: "1"}, {ID: "2"}}, nil)
 	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts", nil)
 	handler := Handler{AccountService: serviceMock}
 	assert.NoError(t, handler.GetAllAccounts(ctx))
@@ -139,8 +138,8 @@ func Test_GetAllAccounts_ShouldReturnStatusOk_WhenReturnWithSuccess(t *testing.T
 	t.Log(rec.Body.String())
 	assert.Equal(t, http.StatusOK, rec.Code)
 	m := testutils.ResponseToMap(rec.Body.Bytes())
-	assert.Equal(t, float64(1), m["accounts"].([]interface{})[0].(map[string]interface{})["id"])
-	assert.Equal(t, float64(2), m["accounts"].([]interface{})[1].(map[string]interface{})["id"])
+	assert.Equal(t, "1", m["accounts"].([]interface{})[0].(map[string]interface{})["id"])
+	assert.Equal(t, "2", m["accounts"].([]interface{})[1].(map[string]interface{})["id"])
 	assert.Equal(t, float64(2), m["count"])
 }
 
@@ -151,6 +150,40 @@ func Test_GetAllAccounts_ShouldReturnBadRequest_WhenGotError(t *testing.T) {
 	handler := Handler{AccountService: serviceMock}
 
 	assert.NoError(t, handler.GetAllAccounts(ctx))
+	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, "some error", m["message"])
+}
+
+func Test_GetAccountBalance_ShouldReturnStatusOk_WhenReturnWithSuccess(t *testing.T) {
+	accountID := "1"
+
+	serviceMock := setupService()
+	serviceMock.On("GetAccount", accountID).Return(&model.Account{ID: accountID, Name: "Bruce Wayne", Balance: 10000}, nil)
+	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts/:account_id/balance", nil)
+	ctx.SetParamNames("account_id")
+	ctx.SetParamValues(accountID)
+
+	handler := Handler{AccountService: serviceMock}
+	assert.NoError(t, handler.GetAccountBalance(ctx))
+	t.Log(rec.Body.String())
+	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, float64(10000), m["balance"])
+
+}
+
+func Test_GetAccountBalance_ShouldReturnBadRequest_WhenGotError(t *testing.T) {
+	accountID := "1"
+
+	serviceMock := setupService()
+	serviceMock.On("GetAccount", accountID).Return(nil, errors.New("some error"))
+	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts/:account_id/balance", nil)
+	ctx.SetParamNames("account_id")
+	ctx.SetParamValues(accountID)
+
+	handler := Handler{AccountService: serviceMock}
+	assert.NoError(t, handler.GetAccountBalance(ctx))
+	t.Log(rec.Body.String())
 	m := testutils.ResponseToMap(rec.Body.Bytes())
 	assert.Equal(t, "some error", m["message"])
 }

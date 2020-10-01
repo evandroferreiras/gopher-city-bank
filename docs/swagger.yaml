@@ -11,16 +11,25 @@ definitions:
         example: status bad request
         type: string
     type: object
-  representation.AccountResponse:
+  representation.AccountBalanceResponse:
     properties:
       balance:
         type: number
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  representation.AccountResponse:
+    properties:
       cpf:
         type: string
       created_at:
         type: string
       id:
-        type: integer
+        type: string
       name:
         type: string
     type: object
@@ -97,6 +106,30 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Create account
+      tags:
+      - accounts
+  /api/accounts/{account_id}/balance:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID of the account to get
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/representation.AccountBalanceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Get account balance information
       tags:
       - accounts
   /api/healthcheck:

@@ -16,9 +16,16 @@ type NewAccountBody struct {
 
 // AccountResponse struct to illustrated account response
 type AccountResponse struct {
-	ID        int       `bson:"_id" json:"id" `
+	ID        string    `bson:"_id" json:"id" `
 	Name      string    `bson:"name" json:"name"`
 	Cpf       string    `bson:"cpf" json:"cpf"`
+	CreatedAt time.Time `bson:"created_at" json:"created_at"`
+}
+
+// AccountBalanceResponse struct to illustrated account balance response
+type AccountBalanceResponse struct {
+	ID        string    `bson:"_id" json:"id" `
+	Name      string    `bson:"name" json:"name"`
 	Balance   float64   `bson:"balance" json:"balance"`
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }
@@ -32,7 +39,7 @@ type AccountsList struct {
 // ToModel converts NewAccountBody representation struct to Account Model
 func (n *NewAccountBody) ToModel() model.Account {
 	return model.Account{
-		ID:        0,
+		ID:        "",
 		Name:      n.Name,
 		Cpf:       n.Cpf,
 		Secret:    n.Secret,
@@ -47,7 +54,16 @@ func ModelToAccountResponse(a *model.Account) *AccountResponse {
 		ID:        a.ID,
 		Name:      a.Name,
 		Cpf:       a.Cpf,
-		Balance:   a.Balance,
 		CreatedAt: a.CreatedAt,
+	}
+}
+
+// ModelToAccountBalanceResponse converts Account model to AccountBalanceResponse representation
+func ModelToAccountBalanceResponse(m *model.Account) *AccountBalanceResponse {
+	return &AccountBalanceResponse{
+		ID:        m.ID,
+		Name:      m.Name,
+		Balance:   m.Balance,
+		CreatedAt: m.CreatedAt,
 	}
 }

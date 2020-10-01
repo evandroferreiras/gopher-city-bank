@@ -94,6 +94,43 @@ var doc = `{
                 }
             }
         },
+        "/api/accounts/{account_id}/balance": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Get account balance information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the account to get",
+                        "name": "account_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/representation.AccountBalanceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/healthcheck": {
             "get": {
                 "description": "Returns true or false, depeding on the state of app.",
@@ -133,12 +170,26 @@ var doc = `{
                 }
             }
         },
-        "representation.AccountResponse": {
+        "representation.AccountBalanceResponse": {
             "type": "object",
             "properties": {
                 "balance": {
                     "type": "number"
                 },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "representation.AccountResponse": {
+            "type": "object",
+            "properties": {
                 "cpf": {
                     "type": "string"
                 },
@@ -146,7 +197,7 @@ var doc = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

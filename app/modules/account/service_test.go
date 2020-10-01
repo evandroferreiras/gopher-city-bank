@@ -19,7 +19,7 @@ func setupRepository() *mocks.Repository {
 func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T) {
 	repositoryMock := setupRepository()
 	account := &model.Account{
-		ID:      1,
+		ID:      "1",
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Balance: 1000000,
@@ -35,7 +35,7 @@ func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.Create(*newAccount)
 	assert.NoError(t, err)
-	assert.Equal(t, 1, returnedAccount.ID)
+	assert.Equal(t, "1", returnedAccount.ID)
 }
 
 func Test_Create_ShouldReturnError_WhenCreateOnRepoWithError(t *testing.T) {
@@ -59,7 +59,7 @@ func Test_Create_ShouldHashSecret(t *testing.T) {
 
 	repositoryMock := setupRepository()
 	account := &model.Account{
-		ID:      1,
+		ID:      "1",
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Balance: 1000000,
@@ -98,9 +98,31 @@ func Test_GetAccounts_ShouldReturnList_WhenGetFromRepoWithSuccess(t *testing.T) 
 
 func Test_GetAccounts_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
 	repositoryMock := setupRepository()
-	repositoryMock.On("GetAccounts").Return(nil, errors.New("Some error"))
+	repositoryMock.On("GetAccounts").Return(nil, errors.New("some error"))
 
 	service := serviceImp{repository: repositoryMock}
 	_, err := service.GetAccounts()
-	assert.EqualError(t, errors.Cause(err), "Some error")
+	assert.EqualError(t, errors.Cause(err), "some error")
+}
+
+func Test_GetAccount_ShouldReturnAccount_WhenGetFromRepoWithSuccess(t *testing.T) {
+	repositoryMock := setupRepository()
+	account := &model.Account{ID: "1"}
+	repositoryMock.On("GetAccount", account.ID).Return(account, nil)
+
+	service := serviceImp{repository: repositoryMock}
+	retunedAccount, err := service.GetAccount(account.ID)
+	assert.NoError(t, err)
+	assert.Equal(t, account.ID, retunedAccount.ID)
+}
+
+func Test_GetAccount_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
+	repositoryMock := setupRepository()
+	account := &model.Account{ID: "1"}
+	repositoryMock.On("GetAccount", account.ID).Return(nil, errors.New("some error"))
+
+	service := serviceImp{repository: repositoryMock}
+	_, err := service.GetAccount(account.ID)
+
+	assert.EqualError(t, errors.Cause(err), "some error")
 }
