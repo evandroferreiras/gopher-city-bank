@@ -38,6 +38,12 @@ To run unit tests:
 make test
 ```
 
+> When running (docker or local) you can access http://localhost:8585/api/healthcheck
+
+## API Documentation
+
+There is a swagger documentation, to check it out, just run and access http://localhost:8585/swagger/index.html
+
 ## Contributing
 
 To contribute with this project, please prepare your setup. This project uses some tools to help and improve the developments:
