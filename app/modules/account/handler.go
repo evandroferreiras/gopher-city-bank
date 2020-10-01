@@ -50,8 +50,7 @@ func (h *Handler) CreateAccount(c echo.Context) error {
 
 	createdAccount, err := h.AccountService.Create(account.ToModel())
 	if err != nil {
-		logrus.Error(err)
-		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
+		return badRequestError(c, err)
 	}
 	return c.JSON(http.StatusCreated, representation.ModelToAccountResponse(createdAccount))
 }
@@ -68,10 +67,35 @@ func (h *Handler) CreateAccount(c echo.Context) error {
 func (h *Handler) GetAllAccounts(c echo.Context) error {
 	accounts, err := h.AccountService.GetAccounts()
 	if err != nil {
-		logrus.Error(err)
-		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
+		return badRequestError(c, err)
 	}
 	return c.JSON(http.StatusOK, getAccountsResponse(accounts))
+}
+
+// GetAccountBalance godoc
+// @Summary Get account balance information
+// @Tags accounts
+// @Accept  json
+// @Produce  json
+// @Param account_id path string true "ID of the account to get"
+// @Success 200 {object} representation.AccountBalanceResponse
+// @Failure 400 {object} httputil.HTTPError
+// @Router /api/accounts/{account_id}/balance [get]
+// GetAccountBalance returns the account balance
+func (h *Handler) GetAccountBalance(c echo.Context) error {
+	accountID := c.Param("account_id")
+
+	account, err := h.AccountService.GetAccount(accountID)
+	if err != nil {
+		return badRequestError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, representation.ModelToAccountBalanceResponse(account))
+}
+
+func badRequestError(c echo.Context, err error) error {
+	logrus.Error(err)
+	return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
 }
 
 func getAccountsResponse(accounts []model.Account) representation.AccountsList {

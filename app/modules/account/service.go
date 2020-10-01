@@ -3,6 +3,8 @@
 package account
 
 import (
+	"fmt"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/pkg/errors"
@@ -12,6 +14,7 @@ import (
 type Service interface {
 	Create(model.Account) (*model.Account, error)
 	GetAccounts() ([]model.Account, error)
+	GetAccount(id string) (*model.Account, error)
 }
 
 type serviceImp struct {
@@ -36,12 +39,22 @@ func (s *serviceImp) Create(account model.Account) (*model.Account, error) {
 	return createdAccount, nil
 }
 
+// GetAccounts lists all accounts
 func (s *serviceImp) GetAccounts() ([]model.Account, error) {
 	accounts, err := s.repository.GetAccounts()
 	if err != nil {
 		return nil, errors.Wrap(err, "an error occurred when trying to get accounts")
 	}
 	return accounts, nil
+}
+
+// GetAccount return a account given an id
+func (s *serviceImp) GetAccount(id string) (*model.Account, error) {
+	account, err := s.repository.GetAccount(id)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("an error ocurren when trying to get account %v", id))
+	}
+	return account, nil
 }
 
 func encryptSecret(account model.Account) model.Account {

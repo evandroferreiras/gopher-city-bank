@@ -1,6 +1,7 @@
 package inmemorydb
 
 import (
+	"fmt"
 	"sync"
 	"time"
 
@@ -30,7 +31,7 @@ func AddAccount(newAccount model.Account) model.Account {
 	idx := len(db.accounts)
 
 	account := model.Account{
-		ID:        idx + 1,
+		ID:        fmt.Sprintf("%d", idx+1),
 		Name:      newAccount.Name,
 		Cpf:       newAccount.Cpf,
 		Secret:    newAccount.Secret,
@@ -45,9 +46,20 @@ func AddAccount(newAccount model.Account) model.Account {
 func GetAccounts() []model.Account {
 	db := GetMemoryDB()
 
-	var accounts []model.Account = make([]model.Account, 0)
+	var accounts = make([]model.Account, 0)
 	for _, account := range db.accounts {
 		accounts = append(accounts, account)
 	}
 	return accounts
+}
+
+// GetAccount returns an account given an id
+func GetAccount(id string) *model.Account {
+	db := GetMemoryDB()
+	for _, account := range db.accounts {
+		if account.ID == id {
+			return &account
+		}
+	}
+	return nil
 }
