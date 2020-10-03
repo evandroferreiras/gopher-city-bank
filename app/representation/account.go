@@ -59,7 +59,7 @@ func ModelToAccountResponse(a *model.Account) *AccountResponse {
 }
 
 // ModelToAccountBalanceResponse converts Account model to AccountBalanceResponse representation
-func ModelToAccountBalanceResponse(m *model.Account) *AccountBalanceResponse {
+func ModelToAccountBalanceResponse(m model.Account) *AccountBalanceResponse {
 	return &AccountBalanceResponse{
 		ID:        m.ID,
 		Name:      m.Name,

@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Account struct to illustrate full object
+// Account struct to illustrate database object
 type Account struct {
 	ID        string    `bson:"_id" json:"id" `
 	Name      string    `bson:"name" json:"name"`

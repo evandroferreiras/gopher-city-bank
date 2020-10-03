@@ -27,8 +27,8 @@ func GenerateJWT(id string) string {
 	return t
 }
 
-// GetIDFromJwt returns id inside a jwtToken
-func GetIDFromJwt(jwtToken string) (string, error) {
+// GetIDFromJWT returns id inside a jwtToken
+func GetIDFromJWT(jwtToken string) (string, error) {
 	token, err := jwtGo.Parse(jwtToken, func(token *jwtGo.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwtGo.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

@@ -8,10 +8,11 @@ import (
 
 // @title Gopher City Bank API
 // @version 1.0
-
 // @contact.name Evandro Souza
 // @contact.email evandroferreiras@gmail.com
-
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	log.Init()
 

@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http/httptest"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/jwt"
+
 	myEcho "github.com/evandroferreiras/gopher-city-bank/app/api/server"
 	"github.com/labstack/echo/v4"
 )
@@ -14,6 +16,17 @@ func GetRecordedAndContext(method string, target string, body io.Reader) (*httpt
 	e := myEcho.New()
 	req := httptest.NewRequest(method, target, body)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	return rec, c
+}
+
+// GetRecordedAndContextWithJWT returns responde recorder and context with JWT to help unit tests
+func GetRecordedAndContextWithJWT(method string, target string, body io.Reader, accountOriginID string) (*httptest.ResponseRecorder, echo.Context) {
+	e := myEcho.New()
+	req := httptest.NewRequest(method, target, body)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	req.Header.Set(echo.HeaderAuthorization, "Token "+jwt.GenerateJWT(accountOriginID))
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	return rec, c

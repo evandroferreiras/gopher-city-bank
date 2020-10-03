@@ -72,6 +72,16 @@ definitions:
     - name
     - secret
     type: object
+  representation.TransferBody:
+    properties:
+      account_destination_id:
+        type: string
+      amount:
+        type: number
+    required:
+    - account_destination_id
+    - amount
+    type: object
 info:
   contact:
     email: evandroferreiras@gmail.com
@@ -194,4 +204,45 @@ paths:
       summary: SignIn for existing user
       tags:
       - login
+  /api/transfers:
+    post:
+      consumes:
+      - application/json
+      description: Transfer money to another account
+      parameters:
+      - description: account destination and amount
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/representation.TransferBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/representation.AccountBalanceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Transfer money to another account
+      tags:
+      - transfer
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
