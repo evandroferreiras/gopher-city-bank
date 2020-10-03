@@ -19,6 +19,11 @@ func (h *Handler) Register(v1 *echo.Group) {
 
 	login := v1.Group("/login")
 	login.POST("", h.login.SignIn)
+
+	transfer := v1.Group("/transfers")
+	transfer.POST("", h.transfer.TransferToAnotherAccount)
+	transfer.GET("", h.transfer.List)
+
 }
 
 // RegisterSwagger sets the route to swagger documentations

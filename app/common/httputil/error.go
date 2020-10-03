@@ -14,6 +14,12 @@ var HTTPErrorValidateBody = HTTPError{
 	Message: "error when trying to validate body. Check the required fields",
 }
 
+// HTTPErrorInvalidJWT is the http error returned when the JWT is invalid
+var HTTPErrorInvalidJWT = HTTPError{
+	Code:    http.StatusUnauthorized,
+	Message: "the user is not authorized",
+}
+
 // NewError is a generic http error
 func NewError(status int, err error) HTTPError {
 	er := HTTPError{

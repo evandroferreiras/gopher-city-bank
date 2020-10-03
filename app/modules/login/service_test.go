@@ -26,7 +26,7 @@ func Test_SignIn_ReturnJwtToken_WhenCpfAndSecretIsValid(t *testing.T) {
 	service := serviceImp{repository: repositoryMock}
 	jwtToken, err := service.SignIn(cpf, secret)
 	assert.NoError(t, err)
-	accountIDOnJwt, err := jwt.GetIDFromJwt(jwtToken)
+	accountIDOnJwt, err := jwt.GetIDFromJWT(jwtToken)
 	assert.NoError(t, err)
 	assert.Equal(t, "980", accountIDOnJwt)
 }

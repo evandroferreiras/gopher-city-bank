@@ -25,7 +25,7 @@ func NewRepository() Repository {
 // Create a new account.
 func (r *repositoryImp) Create(newAccount model.Account) (*model.Account, error) {
 	accountAdded := inmemorydb.AddAccount(newAccount)
-	return &accountAdded, nil
+	return accountAdded, nil
 }
 
 // GetAccounts lists all accounts

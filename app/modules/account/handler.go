@@ -93,7 +93,7 @@ func (h *Handler) GetAccountBalance(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
 	}
 
-	return c.JSON(http.StatusOK, representation.ModelToAccountBalanceResponse(account))
+	return c.JSON(http.StatusOK, representation.ModelToAccountBalanceResponse(*account))
 }
 
 func badRequestError(c echo.Context, err error) error {
