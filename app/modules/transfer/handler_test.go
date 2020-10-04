@@ -125,6 +125,22 @@ func Test_TransferToAnotherAccount_ShouldReturnBadRequest_WhenGotGenericError(t 
 	assert.Equal(t, "some error", m["message"])
 }
 
+func Test_TransferToAnotherAccount_ShouldReturnStatusForbidden_WhenGotNotEnoughAccountBalanceError(t *testing.T) {
+	serviceMock := setupService()
+	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.Wrap(service.ErrorNotEnoughAccountBalance, "some error"))
+	reqJSON := fmt.Sprintf(`{
+				  "account_destination_id": "%v",
+				  "amount": %v
+				}`, accountDestinationID, amount)
+	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.POST, "/api/transfers", strings.NewReader(reqJSON), accountOriginID)
+	handler := Handler{TransferService: serviceMock}
+	assert.NoError(t, handler.TransferToAnotherAccount(ctx))
+	t.Log(rec.Body.String())
+	assert.Equal(t, http.StatusForbidden, rec.Code)
+	m := testutils.ResponseToMap(rec.Body.Bytes())
+	assert.Contains(t, m["message"], service.ErrorNotEnoughAccountBalance.Error())
+}
+
 func Test_List_ShouldReturnStatusOK_WhenUserIsAuthenticated(t *testing.T) {
 
 	depositsTransfers := []model.Transfer{{
