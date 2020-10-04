@@ -60,6 +60,10 @@ func (h Handler) TransferToAnotherAccount(c echo.Context) error {
 		if errors.Cause(err) == service.ErrorNotFound {
 			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
 		}
+		if errors.Cause(err) == service.ErrorNotEnoughAccountBalance {
+			return c.JSON(http.StatusForbidden, httputil.NewError(http.StatusForbidden, err))
+		}
+
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
 	}
 
