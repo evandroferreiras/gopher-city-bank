@@ -33,7 +33,7 @@ func (r *repositoryImp) GetAccounts() ([]model.Account, error) {
 	return inmemorydb.GetAccounts(), nil
 }
 
-// GetAccount return a account given an id
+// getAccount return a account given an id
 func (r *repositoryImp) GetAccount(id string) (*model.Account, error) {
 	account := inmemorydb.GetAccount(id)
 	return account, nil

@@ -186,6 +186,47 @@
             }
         },
         "/api/transfers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List all transfers of an account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transfer"
+                ],
+                "summary": "List all transfers of an account",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/representation.TransferListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -366,6 +407,51 @@
                 },
                 "amount": {
                     "type": "number"
+                }
+            }
+        },
+        "representation.TransferDepositResponse": {
+            "type": "object",
+            "properties": {
+                "account_origin_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "representation.TransferListResponse": {
+            "type": "object",
+            "properties": {
+                "deposits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/representation.TransferDepositResponse"
+                    }
+                },
+                "withdraws": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/representation.TransferWithDrawResponse"
+                    }
+                }
+            }
+        },
+        "representation.TransferWithDrawResponse": {
+            "type": "object",
+            "properties": {
+                "account_destination_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
                 }
             }
         }

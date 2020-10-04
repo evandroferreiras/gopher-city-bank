@@ -12,6 +12,52 @@ type Service struct {
 	mock.Mock
 }
 
+// GetAllDepositsTo provides a mock function with given fields: accountOriginID
+func (_m *Service) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID)
+
+	var r0 []model.Transfer
+	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
+		r0 = rf(accountOriginID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Transfer)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(accountOriginID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetAllWithdrawsOf provides a mock function with given fields: accountOriginID
+func (_m *Service) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID)
+
+	var r0 []model.Transfer
+	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
+		r0 = rf(accountOriginID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Transfer)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(accountOriginID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // TransferBetweenAccount provides a mock function with given fields: accountOriginID, accountDestinationID, amount
 func (_m *Service) TransferBetweenAccount(accountOriginID string, accountDestinationID string, amount float64) (model.Account, error) {
 	ret := _m.Called(accountOriginID, accountDestinationID, amount)

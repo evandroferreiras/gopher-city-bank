@@ -10,7 +10,8 @@ import (
 
 // MemoryDatabase struct
 type MemoryDatabase struct {
-	accounts map[int]*model.Account
+	accounts  map[int]*model.Account
+	transfers map[int]*model.Transfer
 }
 
 var memoryDatabase *MemoryDatabase
@@ -20,7 +21,10 @@ var once sync.Once
 // GetMemoryDB returns a map of Accounts.
 func GetMemoryDB() *MemoryDatabase {
 	once.Do(func() {
-		memoryDatabase = &MemoryDatabase{accounts: make(map[int]*model.Account)}
+		memoryDatabase = &MemoryDatabase{
+			accounts:  make(map[int]*model.Account),
+			transfers: make(map[int]*model.Transfer),
+		}
 	})
 	return memoryDatabase
 }
@@ -85,4 +89,38 @@ func UpdateAccountBalance(id string, newBalance float64) {
 			return
 		}
 	}
+}
+
+// LogTransfer register transfer
+func LogTransfer(newTransfer model.Transfer) {
+	db := GetMemoryDB()
+	idx := len(db.transfers)
+	newTransfer.ID = string(idx)
+	db.transfers[idx] = &newTransfer
+}
+
+// GetAllWithdrawsOf account origin
+func GetAllWithdrawsOf(accountOriginID string) []model.Transfer {
+	db := GetMemoryDB()
+	var transfers = make([]model.Transfer, 0)
+
+	for _, transfer := range db.transfers {
+		if transfer.AccountOriginID == accountOriginID {
+			transfers = append(transfers, *transfer)
+		}
+	}
+	return transfers
+}
+
+// GetAllDepositsTo account origin
+func GetAllDepositsTo(accountOriginID string) []model.Transfer {
+	db := GetMemoryDB()
+	var transfers = make([]model.Transfer, 0)
+
+	for _, transfer := range db.transfers {
+		if transfer.AccountDestinationID == accountOriginID {
+			transfers = append(transfers, *transfer)
+		}
+	}
+	return transfers
 }

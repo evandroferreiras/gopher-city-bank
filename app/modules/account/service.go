@@ -50,7 +50,7 @@ func (s *serviceImp) GetAccounts() ([]model.Account, error) {
 	return accounts, nil
 }
 
-// GetAccount return a account given an id
+// getAccount return a account given an id
 func (s *serviceImp) GetAccount(id string) (*model.Account, error) {
 	account, err := s.repository.GetAccount(id)
 	if err != nil {

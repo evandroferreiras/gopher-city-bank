@@ -66,9 +66,42 @@ func (h Handler) TransferToAnotherAccount(c echo.Context) error {
 	return c.JSON(http.StatusOK, representation.ModelToAccountBalanceResponse(account))
 }
 
-// List returns all transfers of an account
+// List godoc
+// @Summary List all transfers of an account
+// @Description List all transfers of an account
+// @Tags transfer
+// @Produce json
+// @Success 200 {object} representation.TransferListResponse
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 401 {object} httputil.HTTPError
+// @Failure 404 {object} httputil.HTTPError
+// @Security ApiKeyAuth
+// @Router /api/transfers [get]
 func (h Handler) List(c echo.Context) error {
-	return nil
+	accountOriginID, err := getAccountIDFromHeader(c)
+	if err != nil || accountOriginID == emptyAccountID {
+		return err
+	}
+
+	withdraws, err := h.TransferService.GetAllWithdrawsOf(accountOriginID)
+	if err != nil {
+		logrus.Error(err)
+		if errors.Cause(err) == service.ErrorNotFound {
+			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
+		}
+		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
+	}
+
+	deposits, err := h.TransferService.GetAllDepositsTo(accountOriginID)
+	if err != nil {
+		logrus.Error(err)
+		if errors.Cause(err) == service.ErrorNotFound {
+			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
+		}
+		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
+	}
+
+	return c.JSON(http.StatusOK, representation.NewTransferListResponse(withdraws, deposits))
 }
 
 func getAccountIDFromHeader(c echo.Context) (string, error) {

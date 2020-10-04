@@ -14,6 +14,9 @@ type Repository interface {
 	StartTransaction() error
 	CommitTransaction()
 	RollbackTransaction()
+	LogTransfer(transfer model.Transfer) error
+	GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error)
+	GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error)
 }
 
 type repositoryImp struct {
@@ -24,7 +27,7 @@ func NewRepository() Repository {
 	return &repositoryImp{}
 }
 
-// GetAccount return a account given an id
+// getAccount return a account given an id
 func (r repositoryImp) GetAccount(id string) (model.Account, error) {
 	account := inmemorydb.GetAccount(id)
 	if account == nil {
@@ -47,4 +50,17 @@ func (r repositoryImp) CommitTransaction() {
 }
 
 func (r repositoryImp) RollbackTransaction() {
+}
+
+func (r repositoryImp) LogTransfer(transfer model.Transfer) error {
+	inmemorydb.LogTransfer(transfer)
+	return nil
+}
+
+func (r repositoryImp) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
+	return inmemorydb.GetAllWithdrawsOf(accountOriginID), nil
+}
+
+func (r repositoryImp) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
+	return inmemorydb.GetAllDepositsTo(accountOriginID), nil
 }

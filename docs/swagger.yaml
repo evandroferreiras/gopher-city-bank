@@ -82,6 +82,35 @@ definitions:
     - account_destination_id
     - amount
     type: object
+  representation.TransferDepositResponse:
+    properties:
+      account_origin_id:
+        type: string
+      amount:
+        type: number
+      date:
+        type: string
+    type: object
+  representation.TransferListResponse:
+    properties:
+      deposits:
+        items:
+          $ref: '#/definitions/representation.TransferDepositResponse'
+        type: array
+      withdraws:
+        items:
+          $ref: '#/definitions/representation.TransferWithDrawResponse'
+        type: array
+    type: object
+  representation.TransferWithDrawResponse:
+    properties:
+      account_destination_id:
+        type: string
+      amount:
+        type: number
+      date:
+        type: string
+    type: object
 info:
   contact:
     email: evandroferreiras@gmail.com
@@ -205,6 +234,32 @@ paths:
       tags:
       - login
   /api/transfers:
+    get:
+      description: List all transfers of an account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/representation.TransferListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: List all transfers of an account
+      tags:
+      - transfer
     post:
       consumes:
       - application/json

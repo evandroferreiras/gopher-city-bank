@@ -10,3 +10,6 @@ var ErrorInvalidSecret = errors.New("invalid secret")
 
 // ErrorNotEnoughAccountBalance returns when the account dont have enough balance to withdraw
 var ErrorNotEnoughAccountBalance = errors.New("there is not enough account balance")
+
+// ErrorTryingRegisterTransfer returns when the transfer log cant be done
+var ErrorTryingRegisterTransfer = errors.New("error when trying to register transfer log")
