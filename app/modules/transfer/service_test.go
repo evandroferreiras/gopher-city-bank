@@ -28,6 +28,7 @@ func Test_TransferBetweenAccount_ShouldReturnNoErrorAndAccountOrigin_WhenSuccess
 		commitTransaction(nil).
 		updateAccountBalanceOrigin(400, nil).
 		updateAccountBalanceDestination(100.2, nil).
+		logTransfer(nil).
 		build()
 
 	service := serviceImp{repository: repositoryMock}
@@ -56,6 +57,7 @@ func Test_TransferBetweenAccount_FloatingPoint(t *testing.T) {
 		commitTransaction(nil).
 		updateAccountBalanceOrigin(0.1, nil).
 		updateAccountBalanceDestination(0.3, nil).
+		logTransfer(nil).
 		build()
 
 	service := serviceImp{repository: repositoryMock}
@@ -185,11 +187,37 @@ func Test_TransferBetweenAccount_ShouldReturnErrorAndRollback_WhenGotErrorWhileU
 
 }
 
+func Test_TransferBetweenAccount_ShouldReturnErrorAndRollback_WhenGotErrorWhileTryingToLogTransfer(t *testing.T) {
+	const amountToTransfer = 100
+
+	mockBuilder := newMockBuilder()
+	repositoryMock := mockBuilder.
+		getAccountOrigin(accountOriginReturned, nil).
+		getAccountOrigin(accountOriginReturned, nil).
+		getAccountDestination(accountDestinationReturned, nil).
+		startTransaction(nil).
+		commitTransaction(nil).
+		updateAccountBalanceOrigin(400, nil).
+		updateAccountBalanceDestination(100.2, nil).
+		logTransfer(errors.New("error on transfer")).
+		build()
+
+	service := serviceImp{repository: repositoryMock}
+	accountReturned, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amountToTransfer)
+
+	assert.Error(t, err)
+	assert.Equal(t, emptyAccount, accountReturned)
+	assert.Equal(t, accountOriginID, mockBuilder.CapturedTransfer.AccountOriginID)
+	assert.Equal(t, accountDestinationID, mockBuilder.CapturedTransfer.AccountDestinationID)
+	assert.Equal(t, float64(amountToTransfer), mockBuilder.CapturedTransfer.Amount)
+}
+
 // Mock Builder
 type mockBuilder struct {
 	*mocks.Repository
 	CapturedTotalAfterWithdraw float64
 	CapturedTotalAfterDeposit  float64
+	CapturedTransfer           model.Transfer
 }
 
 func newMockBuilder() mockBuilder {
@@ -233,6 +261,14 @@ func (m *mockBuilder) updateAccountBalanceDestination(newBalance float64, return
 	m.Repository.On("UpdateAccountBalance", accountDestinationID, newBalance).Return(returnedError).Once().
 		Run(func(args mock.Arguments) {
 			m.CapturedTotalAfterDeposit = args.Get(1).(float64)
+		})
+	return m
+}
+
+func (m *mockBuilder) logTransfer(err error) *mockBuilder {
+	m.Repository.On("LogTransfer", mock.Anything).Return(err).Once().
+		Run(func(args mock.Arguments) {
+			m.CapturedTransfer = args.Get(0).(model.Transfer)
 		})
 	return m
 }

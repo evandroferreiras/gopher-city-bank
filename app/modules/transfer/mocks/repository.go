@@ -17,7 +17,7 @@ func (_m *Repository) CommitTransaction() {
 	_m.Called()
 }
 
-// GetAccount provides a mock function with given fields: id
+// getAccount provides a mock function with given fields: id
 func (_m *Repository) GetAccount(id string) (model.Account, error) {
 	ret := _m.Called(id)
 
@@ -36,6 +36,66 @@ func (_m *Repository) GetAccount(id string) (model.Account, error) {
 	}
 
 	return r0, r1
+}
+
+// GetAllDepositsTo provides a mock function with given fields: accountOriginID
+func (_m *Repository) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID)
+
+	var r0 []model.Transfer
+	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
+		r0 = rf(accountOriginID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Transfer)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(accountOriginID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetAllWithdrawsOf provides a mock function with given fields: accountOriginID
+func (_m *Repository) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID)
+
+	var r0 []model.Transfer
+	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
+		r0 = rf(accountOriginID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Transfer)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(accountOriginID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LogTransfer provides a mock function with given fields: _a0
+func (_m *Repository) LogTransfer(_a0 model.Transfer) error {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(model.Transfer) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // RollbackTransaction provides a mock function with given fields:

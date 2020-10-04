@@ -35,7 +35,7 @@ func (_m *Repository) Create(newAccount model.Account) (*model.Account, error) {
 	return r0, r1
 }
 
-// GetAccount provides a mock function with given fields: id
+// getAccount provides a mock function with given fields: id
 func (_m *Repository) GetAccount(id string) (*model.Account, error) {
 	ret := _m.Called(id)
 
