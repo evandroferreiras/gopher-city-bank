@@ -10,6 +10,7 @@ import (
 
 // MemoryDatabase struct
 type MemoryDatabase struct {
+	sync.RWMutex
 	accounts  map[int]*model.Account
 	transfers map[int]*model.Transfer
 }
@@ -32,6 +33,8 @@ func GetMemoryDB() *MemoryDatabase {
 // AddAccount adds an account to the inMemoryDatabase
 func AddAccount(newAccount model.Account) *model.Account {
 	db := GetMemoryDB()
+	db.Lock()
+	defer db.Unlock()
 	idx := len(db.accounts)
 
 	account := &model.Account{
@@ -49,6 +52,9 @@ func AddAccount(newAccount model.Account) *model.Account {
 // GetAccounts returns all accounts from the inMemoryDatabase
 func GetAccounts() []model.Account {
 	db := GetMemoryDB()
+	db.RLock()
+	defer db.RUnlock()
+
 	var accounts = make([]model.Account, 0)
 
 	for _, account := range db.accounts {
@@ -60,6 +66,9 @@ func GetAccounts() []model.Account {
 // GetAccount returns an account given an id
 func GetAccount(id string) *model.Account {
 	db := GetMemoryDB()
+	db.RLock()
+	defer db.RUnlock()
+
 	for _, account := range db.accounts {
 		if account.ID == id {
 
@@ -72,6 +81,9 @@ func GetAccount(id string) *model.Account {
 // GetAccountByCpf returns an account given an cpf
 func GetAccountByCpf(cpf string) *model.Account {
 	db := GetMemoryDB()
+	db.RLock()
+	defer db.RUnlock()
+
 	for _, account := range db.accounts {
 		if account.Cpf == cpf {
 			return account
@@ -83,6 +95,9 @@ func GetAccountByCpf(cpf string) *model.Account {
 // UpdateAccountBalance updates and account balance
 func UpdateAccountBalance(id string, newBalance float64) {
 	db := GetMemoryDB()
+	db.Lock()
+	defer db.Unlock()
+
 	for _, account := range db.accounts {
 		if account.ID == id {
 			account.Balance = newBalance
@@ -94,6 +109,9 @@ func UpdateAccountBalance(id string, newBalance float64) {
 // LogTransfer register transfer
 func LogTransfer(newTransfer model.Transfer) {
 	db := GetMemoryDB()
+	db.Lock()
+	defer db.Unlock()
+
 	idx := len(db.transfers)
 	newTransfer.ID = string(idx)
 	db.transfers[idx] = &newTransfer
@@ -102,6 +120,9 @@ func LogTransfer(newTransfer model.Transfer) {
 // GetAllWithdrawsOf account origin
 func GetAllWithdrawsOf(accountOriginID string) []model.Transfer {
 	db := GetMemoryDB()
+	db.RLock()
+	defer db.RUnlock()
+
 	var transfers = make([]model.Transfer, 0)
 
 	for _, transfer := range db.transfers {
@@ -115,6 +136,9 @@ func GetAllWithdrawsOf(accountOriginID string) []model.Transfer {
 // GetAllDepositsTo account origin
 func GetAllDepositsTo(accountOriginID string) []model.Transfer {
 	db := GetMemoryDB()
+	db.RLock()
+	defer db.RUnlock()
+
 	var transfers = make([]model.Transfer, 0)
 
 	for _, transfer := range db.transfers {
