@@ -31,3 +31,9 @@ func JwtSigningKey() string {
 	}
 	return signingKey
 }
+
+// MySQLDSN environment variable with MYSQL string connection in DSN format.(refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details)
+func MySQLDSN() string {
+	dsn := os.Getenv("MYSQL_DSN")
+	return dsn
+}

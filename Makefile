@@ -1,4 +1,6 @@
 
+LOCALHOST_MYSQL_DSN := "api-user:api-password@tcp(127.0.0.1:3306)/gophercitybank?charset=utf8mb4&parseTime=True&loc=Local"
+
 # Developer setup commands
 setup-githooks:
 	pip install pre-commit
@@ -18,7 +20,11 @@ __run-go-critic:
 	gocritic check ./app/...
 
 run:__generage-swagger __run-go-critic
-	JWT_SIGNING_KEY=batman LOCAL_ENV=true USE_MEMORY_DB=$(USE_MEMORY_DB)  go run -race ./app
+	JWT_SIGNING_KEY=batman \
+	LOCAL_ENV=true \
+	USE_MEMORY_DB=false \
+	MYSQL_DSN=$(LOCALHOST_MYSQL_DSN) \
+	$(USE_MEMORY_DB)  go run -race ./app
 
 make test: __run-go-critic
 	go test -race ./...
@@ -29,7 +35,8 @@ generate-mocks:
 
 # Database commands
 run-automigrate:
-	EXECUTE_AUTOMIGRATE=true go run -race ./app
+		MYSQL_DSN=$(LOCALHOST_MYSQL_DSN) \
+		EXECUTE_AUTOMIGRATE=true go run -race ./app
 # ############
 
 # Docker commands
@@ -39,5 +46,7 @@ docker-compose-build:
 docker-compose-up:
 	docker-compose --file ./docker/docker-compose.yaml up
 
+docker-compose-up-mysql:
+	docker-compose --file ./docker/docker-compose.yaml up mysql_server
 # ###########
 

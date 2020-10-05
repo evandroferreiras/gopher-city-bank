@@ -3,9 +3,11 @@ package db
 import (
 	"sync"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/envvar"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/sirupsen/logrus"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/mysql"
+
 	"gorm.io/gorm"
 )
 
@@ -14,7 +16,9 @@ var once sync.Once
 
 // newDB creates newDB instance of GORM
 func newDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("gopher-city-bank.db"), &gorm.Config{})
+	dsn := envvar.MySQLDSN()
+	logrus.Debug(dsn)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logrus.Panic("error when trying to connect Database")
 		return nil

@@ -22,6 +22,7 @@ This is the Gopher ~~Gotham~~ Bank City app.
 | JWT_SIGNING_KEY | `string`  | Secret key used to encrypt Jwt |
 | USE_MEMORY_DB | `boolean` | Identify your application will run using a memory based repository (collection of `maps`) or a real database |
 | EXECUTE_AUTOMIGRATE | `boolean` | When true, the application will run as a Auto migration mode and will create the needed tables |
+| MYSQL_DSN | `string` | MYSQL string connection in DSN format.(refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details) |
 ## Usage
 To run automigrate and created the needed tables:
 ```shell

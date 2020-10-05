@@ -1,9 +1,43 @@
-version: '2'
+version: '2.1'
 services:
+  migration:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+    container_name: gopher-city-bank-migration
+    environment:
+      MYSQL_DSN: api-user:api-password@tcp(mysql_server:3306)/gophercitybank?charset=utf8mb4&parseTime=True&loc=Local
+      EXECUTE_AUTOMIGRATE: "true"
   api:
     build:
       context: ../
       dockerfile: docker/Dockerfile
+    depends_on:
+      - migration
     container_name: gopher-city-bank-api
+    environment:
+      MYSQL_DSN: api-user:api-password@tcp(mysql_server:3306)/gophercitybank?charset=utf8mb4&parseTime=True&loc=Local
     ports:
       - 8585:8585
+  mysql_server:
+    container_name: gopher-city-bank-mysql
+    image: "mysql:latest"
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: gophercitybank
+      MYSQL_USER: api-user
+      MYSQL_PASSWORD: api-password
+    volumes:
+      - /var/lib/mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
