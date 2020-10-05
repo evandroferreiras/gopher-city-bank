@@ -1,13 +1,13 @@
 package healthcheck
 
-type repositoryImp struct {
+type repositoryInMemory struct {
 }
 
 // NewInMemoryDBRepository is a constructor to inmemory Healthcheck repository
 func NewInMemoryDBRepository() Repository {
-	return &repositoryImp{}
+	return &repositoryInMemory{}
 }
 
-func (r *repositoryImp) Ping() (bool, error) {
+func (r *repositoryInMemory) Ping() (bool, error) {
 	return true, nil
 }

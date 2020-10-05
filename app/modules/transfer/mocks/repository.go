@@ -3,6 +3,8 @@
 package mocks
 
 import (
+	context "context"
+
 	model "github.com/evandroferreiras/gopher-city-bank/app/model"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -12,12 +14,12 @@ type Repository struct {
 	mock.Mock
 }
 
-// CommitTransaction provides a mock function with given fields:
-func (_m *Repository) CommitTransaction() {
-	_m.Called()
+// CommitTransaction provides a mock function with given fields: ctx
+func (_m *Repository) CommitTransaction(ctx context.Context) {
+	_m.Called(ctx)
 }
 
-// getAccount provides a mock function with given fields: id
+// GetAccount provides a mock function with given fields: id
 func (_m *Repository) GetAccount(id string) (model.Account, error) {
 	ret := _m.Called(id)
 
@@ -84,13 +86,13 @@ func (_m *Repository) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfe
 	return r0, r1
 }
 
-// LogTransfer provides a mock function with given fields: _a0
-func (_m *Repository) LogTransfer(_a0 model.Transfer) error {
-	ret := _m.Called(_a0)
+// LogTransfer provides a mock function with given fields: ctx, _a1
+func (_m *Repository) LogTransfer(ctx context.Context, _a1 model.Transfer) error {
+	ret := _m.Called(ctx, _a1)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(model.Transfer) error); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, model.Transfer) error); ok {
+		r0 = rf(ctx, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -98,32 +100,41 @@ func (_m *Repository) LogTransfer(_a0 model.Transfer) error {
 	return r0
 }
 
-// RollbackTransaction provides a mock function with given fields:
-func (_m *Repository) RollbackTransaction() {
-	_m.Called()
+// RollbackTransaction provides a mock function with given fields: ctx
+func (_m *Repository) RollbackTransaction(ctx context.Context) {
+	_m.Called(ctx)
 }
 
 // StartTransaction provides a mock function with given fields:
-func (_m *Repository) StartTransaction() error {
+func (_m *Repository) StartTransaction() (interface{}, error) {
 	ret := _m.Called()
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func() error); ok {
+	var r0 interface{}
+	if rf, ok := ret.Get(0).(func() interface{}); ok {
 		r0 = rf()
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(interface{})
+		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
-// UpdateAccountBalance provides a mock function with given fields: id, newBalance
-func (_m *Repository) UpdateAccountBalance(id string, newBalance float64) error {
-	ret := _m.Called(id, newBalance)
+// UpdateAccountBalance provides a mock function with given fields: ctx, id, newBalance
+func (_m *Repository) UpdateAccountBalance(ctx context.Context, id string, newBalance float64) error {
+	ret := _m.Called(ctx, id, newBalance)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, float64) error); ok {
-		r0 = rf(id, newBalance)
+	if rf, ok := ret.Get(0).(func(context.Context, string, float64) error); ok {
+		r0 = rf(ctx, id, newBalance)
 	} else {
 		r0 = ret.Error(0)
 	}

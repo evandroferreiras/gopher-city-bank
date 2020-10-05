@@ -3,19 +3,20 @@
 package transfer
 
 import (
+	"context"
+
 	"github.com/evandroferreiras/gopher-city-bank/app/common/envvar"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/sirupsen/logrus"
 )
 
 // Repository is an interface to Transfer repository
 type Repository interface {
 	GetAccount(id string) (model.Account, error)
-	UpdateAccountBalance(id string, newBalance float64) error
-	StartTransaction() error
-	CommitTransaction()
-	RollbackTransaction()
-	LogTransfer(transfer model.Transfer) error
+	UpdateAccountBalance(ctx context.Context, id string, newBalance float64) error
+	StartTransaction() (interface{}, error)
+	CommitTransaction(ctx context.Context)
+	RollbackTransaction(ctx context.Context)
+	LogTransfer(ctx context.Context, transfer model.Transfer) error
 	GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error)
 	GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error)
 }
@@ -25,6 +26,5 @@ func BuildRepository() Repository {
 	if envvar.UsingMemoryDB() {
 		return NewInMemoryDBRepository()
 	}
-	logrus.Fatal("Repository not implemented for transfer")
-	return nil
+	return NewORMRepository()
 }

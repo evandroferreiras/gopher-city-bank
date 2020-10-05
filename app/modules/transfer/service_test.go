@@ -235,40 +235,40 @@ func (m *mockBuilder) getAccountDestination(account model.Account, err error) *m
 }
 
 func (m *mockBuilder) startTransaction(err error) *mockBuilder {
-	m.Repository.On("StartTransaction").Return(err).Once()
+	m.Repository.On("StartTransaction").Return(nil, err).Once()
 	return m
 }
 
 func (m *mockBuilder) commitTransaction(err error) *mockBuilder {
-	m.Repository.On("CommitTransaction").Return(err).Once()
+	m.Repository.On("CommitTransaction", mock.Anything).Return(err).Once()
 	return m
 }
 
 func (m *mockBuilder) rollbackTransaction(err error) *mockBuilder {
-	m.Repository.On("RollbackTransaction").Return(err).Once()
+	m.Repository.On("RollbackTransaction", mock.Anything).Return(err).Once()
 	return m
 }
 
 func (m *mockBuilder) updateAccountBalanceOrigin(newBalance float64, returnedError error) *mockBuilder {
-	m.Repository.On("UpdateAccountBalance", accountOriginID, newBalance).Return(returnedError).Once().
+	m.Repository.On("UpdateAccountBalance", mock.Anything, accountOriginID, newBalance).Return(returnedError).Once().
 		Run(func(args mock.Arguments) {
-			m.CapturedTotalAfterWithdraw = args.Get(1).(float64)
+			m.CapturedTotalAfterWithdraw = args.Get(2).(float64)
 		})
 	return m
 }
 
 func (m *mockBuilder) updateAccountBalanceDestination(newBalance float64, returnedError error) *mockBuilder {
-	m.Repository.On("UpdateAccountBalance", accountDestinationID, newBalance).Return(returnedError).Once().
+	m.Repository.On("UpdateAccountBalance", mock.Anything, accountDestinationID, newBalance).Return(returnedError).Once().
 		Run(func(args mock.Arguments) {
-			m.CapturedTotalAfterDeposit = args.Get(1).(float64)
+			m.CapturedTotalAfterDeposit = args.Get(2).(float64)
 		})
 	return m
 }
 
 func (m *mockBuilder) logTransfer(err error) *mockBuilder {
-	m.Repository.On("LogTransfer", mock.Anything).Return(err).Once().
+	m.Repository.On("LogTransfer", mock.Anything, mock.Anything).Return(err).Once().
 		Run(func(args mock.Arguments) {
-			m.CapturedTransfer = args.Get(0).(model.Transfer)
+			m.CapturedTransfer = args.Get(1).(model.Transfer)
 		})
 	return m
 }

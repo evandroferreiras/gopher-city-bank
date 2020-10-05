@@ -27,6 +27,11 @@ generate-mocks:
 	go generate ./...
 # ###########
 
+# Database commands
+run-automigrate:
+	EXECUTE_AUTOMIGRATE=true go run -race ./app
+# ############
+
 # Docker commands
 docker-compose-build:
 	docker-compose --file ./docker/docker-compose.yaml build

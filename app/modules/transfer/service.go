@@ -3,10 +3,13 @@
 package transfer
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/evandroferreiras/gopher-city-bank/app/common/constant"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
@@ -93,7 +96,9 @@ func (s serviceImp) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, 
 
 // private methods
 func (s serviceImp) makeTransfer(accountOrigin model.Account, accountDestination model.Account, amount float64) error {
-	err := s.repository.StartTransaction()
+	tx, err := s.repository.StartTransaction()
+	ctx := context.WithValue(context.Background(), constant.TransactionCtxKey, tx)
+
 	if err != nil {
 		return errors.Wrap(err, "error when trying to start transfer transaction")
 	}
@@ -107,15 +112,15 @@ func (s serviceImp) makeTransfer(accountOrigin model.Account, accountDestination
 	accountOrigin.Balance = truncateTwoDecimals(accountOrigin.Balance - amount)
 	accountDestination.Balance = truncateTwoDecimals(accountDestination.Balance + amount)
 
-	err = s.repository.UpdateAccountBalance(accountOrigin.ID, accountOrigin.Balance)
+	err = s.repository.UpdateAccountBalance(ctx, accountOrigin.ID, accountOrigin.Balance)
 	if err != nil {
-		s.repository.RollbackTransaction()
+		s.repository.RollbackTransaction(ctx)
 		return errors.Wrap(err, "error when trying to withdraw money from account origin")
 	}
 
-	err = s.repository.UpdateAccountBalance(accountDestination.ID, accountDestination.Balance)
+	err = s.repository.UpdateAccountBalance(ctx, accountDestination.ID, accountDestination.Balance)
 	if err != nil {
-		s.repository.RollbackTransaction()
+		s.repository.RollbackTransaction(ctx)
 		return errors.Wrap(err, "error when trying to deposit money to account destination")
 	}
 
@@ -125,12 +130,12 @@ func (s serviceImp) makeTransfer(accountOrigin model.Account, accountDestination
 		Amount:               amount,
 		CreatedAt:            time.Now(),
 	}
-	err = s.repository.LogTransfer(transfer)
+	err = s.repository.LogTransfer(ctx, transfer)
 	if err != nil {
 		return errors.Wrap(err, "error when trying to register transfer log")
 	}
 
-	s.repository.CommitTransaction()
+	s.repository.CommitTransaction(ctx)
 	return nil
 }
 

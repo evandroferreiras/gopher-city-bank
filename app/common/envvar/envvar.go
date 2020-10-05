@@ -17,6 +17,12 @@ func UsingMemoryDB() bool {
 	return usingMemoryDB
 }
 
+// ExecuteAutoMigrate environment variable that when true, the application will run as a Auto migration mode and will create the needed tables
+func ExecuteAutoMigrate() bool {
+	executeAutoMigrate, _ := strconv.ParseBool(os.Getenv("EXECUTE_AUTOMIGRATE"))
+	return executeAutoMigrate
+}
+
 // JwtSigningKey environment variable that Jwt Signing Key
 func JwtSigningKey() string {
 	signingKey := os.Getenv("JWT_SIGNING_KEY")
