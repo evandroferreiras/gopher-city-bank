@@ -23,7 +23,7 @@ type serviceImp struct {
 // NewService is a constructor to Login service
 func NewService() Service {
 	return &serviceImp{
-		repository: NewRepository(),
+		repository: BuildRepository(),
 	}
 }
 

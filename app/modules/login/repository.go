@@ -3,8 +3,9 @@
 package login
 
 import (
+	"github.com/evandroferreiras/gopher-city-bank/app/common/envvar"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/evandroferreiras/gopher-city-bank/app/model/inmemorydb"
+	"github.com/sirupsen/logrus"
 )
 
 // Repository is an interface to Login repository
@@ -12,15 +13,11 @@ type Repository interface {
 	GetAccountByCpf(cpf string) (*model.Account, error)
 }
 
-type repositoryImp struct {
-}
-
-// NewRepository is a constructor to Login repository
-func NewRepository() Repository {
-	return &repositoryImp{}
-}
-
-func (r repositoryImp) GetAccountByCpf(cpf string) (*model.Account, error) {
-	account := inmemorydb.GetAccountByCpf(cpf)
-	return account, nil
+// BuildRepository is a factory constructor for Login Repository
+func BuildRepository() Repository {
+	if envvar.UsingMemoryDB() {
+		return NewInMemoryDBRepository()
+	}
+	logrus.Fatal("Repository not implemented for login")
+	return nil
 }

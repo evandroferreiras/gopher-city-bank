@@ -2,19 +2,21 @@
 
 package healthcheck
 
+import (
+	"github.com/evandroferreiras/gopher-city-bank/app/common/envvar"
+	"github.com/sirupsen/logrus"
+)
+
 // Repository is an interface to Healthcheck repository
 type Repository interface {
 	Ping() (bool, error)
 }
 
-type repositoryImp struct {
-}
-
-// NewRepository is a constructor to Healthcheck repository
-func NewRepository() Repository {
-	return &repositoryImp{}
-}
-
-func (r *repositoryImp) Ping() (bool, error) {
-	return true, nil
+// BuildRepository is a factory constructor for Healthcheck Repository
+func BuildRepository() Repository {
+	if envvar.UsingMemoryDB() {
+		return NewInMemoryDBRepository()
+	}
+	logrus.Fatal("Repository not implemented for healthcheck")
+	return nil
 }

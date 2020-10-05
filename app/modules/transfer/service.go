@@ -33,7 +33,7 @@ type serviceImp struct {
 // NewService is a constructor to Transfer service
 func NewService() Service {
 	return &serviceImp{
-		repository: NewRepository(),
+		repository: BuildRepository(),
 	}
 }
 
