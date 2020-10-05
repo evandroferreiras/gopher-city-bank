@@ -20,6 +20,7 @@ This is the Gopher ~~Gotham~~ Bank City app.
 | -------- | ---------------- | ----------- |
 | LOCAL_ENV |  `boolean` | Identify if your running localhost, so the logs will be more friendly |
 | JWT_SIGNING_KEY | `string`  | Secret key used to encrypt Jwt |
+| USE_MEMORY_DB | `boolean` | Identify your application will run using a memory based repository (collection of `maps`) or a real database |
 
 ## Usage
 

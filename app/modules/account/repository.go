@@ -3,8 +3,9 @@
 package account
 
 import (
+	"github.com/evandroferreiras/gopher-city-bank/app/common/envvar"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/evandroferreiras/gopher-city-bank/app/model/inmemorydb"
+	"github.com/sirupsen/logrus"
 )
 
 // Repository is an interface to Account repository
@@ -14,27 +15,11 @@ type Repository interface {
 	GetAccount(id string) (*model.Account, error)
 }
 
-type repositoryImp struct {
-}
-
-// NewRepository is a constructor to Account repository
-func NewRepository() Repository {
-	return &repositoryImp{}
-}
-
-// Create a new account.
-func (r *repositoryImp) Create(newAccount model.Account) (*model.Account, error) {
-	accountAdded := inmemorydb.AddAccount(newAccount)
-	return accountAdded, nil
-}
-
-// GetAccounts lists all accounts
-func (r *repositoryImp) GetAccounts() ([]model.Account, error) {
-	return inmemorydb.GetAccounts(), nil
-}
-
-// getAccount return a account given an id
-func (r *repositoryImp) GetAccount(id string) (*model.Account, error) {
-	account := inmemorydb.GetAccount(id)
-	return account, nil
+// BuildRepository is a factory constructor for Account Repository
+func BuildRepository() Repository {
+	if envvar.UsingMemoryDB() {
+		return NewInMemoryDBRepository()
+	}
+	logrus.Fatal("Repository not implemented for account")
+	return nil
 }
