@@ -5,7 +5,6 @@ package login
 import (
 	"github.com/evandroferreiras/gopher-city-bank/app/common/envvar"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/sirupsen/logrus"
 )
 
 // Repository is an interface to Login repository
@@ -18,6 +17,5 @@ func BuildRepository() Repository {
 	if envvar.UsingMemoryDB() {
 		return NewInMemoryDBRepository()
 	}
-	logrus.Fatal("Repository not implemented for login")
-	return nil
+	return NewORMRepository()
 }

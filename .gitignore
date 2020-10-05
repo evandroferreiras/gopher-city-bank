@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+gopher-city-bank.db
 
 # IDE
 .idea

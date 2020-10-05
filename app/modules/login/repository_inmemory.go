@@ -1,19 +1,19 @@
 package login
 
 import (
+	"github.com/evandroferreiras/gopher-city-bank/app/db/inmemorydb"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/evandroferreiras/gopher-city-bank/app/model/inmemorydb"
 )
 
-type repositoryImp struct {
+type repositoryInMemory struct {
 }
 
 // NewInMemoryDBRepository is a constructor to inmemory Login repository
 func NewInMemoryDBRepository() Repository {
-	return &repositoryImp{}
+	return &repositoryInMemory{}
 }
 
-func (r repositoryImp) GetAccountByCpf(cpf string) (*model.Account, error) {
+func (r repositoryInMemory) GetAccountByCpf(cpf string) (*model.Account, error) {
 	account := inmemorydb.GetAccountByCpf(cpf)
 	return account, nil
 }

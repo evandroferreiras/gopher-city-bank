@@ -1,8 +1,10 @@
 package transfer
 
 import (
+	"context"
+
+	"github.com/evandroferreiras/gopher-city-bank/app/db/inmemorydb"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/evandroferreiras/gopher-city-bank/app/model/inmemorydb"
 )
 
 type repositoryImp struct {
@@ -23,22 +25,22 @@ func (r repositoryImp) GetAccount(id string) (model.Account, error) {
 }
 
 // UpdateAccountBalance subtracts the amount of money from accountID
-func (r repositoryImp) UpdateAccountBalance(id string, newBalance float64) error {
+func (r repositoryImp) UpdateAccountBalance(ctx context.Context, id string, newBalance float64) error {
 	inmemorydb.UpdateAccountBalance(id, newBalance)
 	return nil
 }
 
-func (r repositoryImp) StartTransaction() error {
-	return nil
+func (r repositoryImp) StartTransaction() (interface{}, error) {
+	return nil, nil
 }
 
-func (r repositoryImp) CommitTransaction() {
+func (r repositoryImp) CommitTransaction(ctx context.Context) {
 }
 
-func (r repositoryImp) RollbackTransaction() {
+func (r repositoryImp) RollbackTransaction(ctx context.Context) {
 }
 
-func (r repositoryImp) LogTransfer(transfer model.Transfer) error {
+func (r repositoryImp) LogTransfer(ctx context.Context, transfer model.Transfer) error {
 	inmemorydb.LogTransfer(transfer)
 	return nil
 }

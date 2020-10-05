@@ -21,8 +21,12 @@ This is the Gopher ~~Gotham~~ Bank City app.
 | LOCAL_ENV |  `boolean` | Identify if your running localhost, so the logs will be more friendly |
 | JWT_SIGNING_KEY | `string`  | Secret key used to encrypt Jwt |
 | USE_MEMORY_DB | `boolean` | Identify your application will run using a memory based repository (collection of `maps`) or a real database |
-
+| EXECUTE_AUTOMIGRATE | `boolean` | When true, the application will run as a Auto migration mode and will create the needed tables |
 ## Usage
+To run automigrate and created the needed tables:
+```shell
+make run-automigrate
+```
 
 To run localhost:
 ```shell

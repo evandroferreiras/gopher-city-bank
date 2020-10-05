@@ -1,31 +1,31 @@
 package account
 
 import (
+	"github.com/evandroferreiras/gopher-city-bank/app/db/inmemorydb"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
-	"github.com/evandroferreiras/gopher-city-bank/app/model/inmemorydb"
 )
 
-type repositoryImp struct {
+type repositoryInMemory struct {
 }
 
 // NewInMemoryDBRepository is a constructor to inmemory Account repository
 func NewInMemoryDBRepository() Repository {
-	return &repositoryImp{}
+	return &repositoryInMemory{}
 }
 
 // Create a new account.
-func (r *repositoryImp) Create(newAccount model.Account) (*model.Account, error) {
+func (r *repositoryInMemory) Create(newAccount model.Account) (*model.Account, error) {
 	accountAdded := inmemorydb.AddAccount(newAccount)
 	return accountAdded, nil
 }
 
 // GetAccounts lists all accounts
-func (r *repositoryImp) GetAccounts() ([]model.Account, error) {
+func (r *repositoryInMemory) GetAccounts() ([]model.Account, error) {
 	return inmemorydb.GetAccounts(), nil
 }
 
 // getAccount return a account given an id
-func (r *repositoryImp) GetAccount(id string) (*model.Account, error) {
+func (r *repositoryInMemory) GetAccount(id string) (*model.Account, error) {
 	account := inmemorydb.GetAccount(id)
 	return account, nil
 }

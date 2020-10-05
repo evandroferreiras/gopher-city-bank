@@ -39,7 +39,6 @@ type AccountsList struct {
 // ToModel converts NewAccountBody representation struct to Account Model
 func (n *NewAccountBody) ToModel() model.Account {
 	return model.Account{
-		ID:        "",
 		Name:      n.Name,
 		Cpf:       n.Cpf,
 		Secret:    n.Secret,
