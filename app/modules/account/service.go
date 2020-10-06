@@ -14,9 +14,9 @@ import (
 
 // Service is an interface to Account service
 type Service interface {
-	Create(model.Account) (*model.Account, error)
+	Create(model.Account) (model.Account, error)
 	GetAccounts() ([]model.Account, error)
-	GetAccount(id string) (*model.Account, error)
+	GetAccount(id string) (model.Account, error)
 }
 
 type serviceImp struct {
@@ -31,12 +31,12 @@ func NewService() Service {
 }
 
 // Create a new account.
-func (s *serviceImp) Create(account model.Account) (*model.Account, error) {
+func (s *serviceImp) Create(account model.Account) (model.Account, error) {
 
 	account = encryptSecret(account)
 	createdAccount, err := s.repository.Create(account)
 	if err != nil {
-		return nil, errors.Wrap(err, "an error occurred when trying to create account")
+		return model.EmptyAccount, errors.Wrap(err, "an error occurred when trying to create account")
 	}
 	return createdAccount, nil
 }
@@ -51,13 +51,13 @@ func (s *serviceImp) GetAccounts() ([]model.Account, error) {
 }
 
 // getAccount return a account given an id
-func (s *serviceImp) GetAccount(id string) (*model.Account, error) {
+func (s *serviceImp) GetAccount(id string) (model.Account, error) {
 	account, err := s.repository.GetAccount(id)
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("an error ocurren when trying to get account %v", id))
+		return model.EmptyAccount, errors.Wrap(err, fmt.Sprintf("an error ocurren when trying to get account %v", id))
 	}
-	if account == nil {
-		return nil, errors.Wrap(service.ErrorNotFound, "account")
+	if account == model.EmptyAccount {
+		return model.EmptyAccount, errors.Wrap(service.ErrorNotFound, "account")
 	}
 
 	return account, nil

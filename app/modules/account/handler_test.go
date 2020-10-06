@@ -24,7 +24,7 @@ func setupService() *mocks.Service {
 
 func Test_CreateAccount_ShouldReturnStatusCreated_WhenCreateWithSuccess(t *testing.T) {
 	serviceMock := setupService()
-	account := &model.Account{
+	account := model.Account{
 		ID:      "1",
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
@@ -53,7 +53,7 @@ func Test_CreateAccount_ShouldReturnStatusCreated_WhenCreateWithSuccess(t *testi
 
 func Test_CreateAccount_ShouldReturnBadRequest_WhenHasErrorOnBody(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("Create", mock.Anything).Return(nil, nil)
+	serviceMock.On("Create", mock.Anything).Return(model.EmptyAccount, nil)
 
 	reqJSON := `{
 				 some invalid body
@@ -71,7 +71,7 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenHasErrorOnBody(t *testing.T) 
 
 func Test_CreateAccount_ShouldReturnBadRequest_WhenBodyMissRequiredFields(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("Create", mock.Anything).Return(nil, nil)
+	serviceMock.On("Create", mock.Anything).Return(model.EmptyAccount, nil)
 
 	reqJSON := `{}`
 	rec, ctx := testutils.GetRecordedAndContext(echo.POST, "/api/accounts", strings.NewReader(reqJSON))
@@ -87,7 +87,7 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenBodyMissRequiredFields(t *tes
 
 func Test_CreateAccount_ShouldReturnBadRequest_WhenCantCreateAnAccount(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("Create", mock.Anything).Return(nil, errors.New("some error"))
+	serviceMock.On("Create", mock.Anything).Return(model.EmptyAccount, errors.New("some error"))
 
 	reqJSON := `{
 				  "balance": 1000000,
@@ -109,7 +109,7 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenCantCreateAnAccount(t *testin
 
 func Test_CreateAccount_ShouldReturnBadRequest_WhenBalanceIsLessThanZero(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("Create", mock.Anything).Return(nil, errors.New("some error"))
+	serviceMock.On("Create", mock.Anything).Return(model.EmptyAccount, errors.New("some error"))
 
 	reqJSON := `{
 				  "balance": -1,
@@ -162,7 +162,7 @@ func Test_GetAccountBalance_ShouldReturnStatusOk_WhenReturnWithSuccess(t *testin
 	accountID := "1"
 
 	serviceMock := setupService()
-	serviceMock.On("GetAccount", accountID).Return(&model.Account{ID: accountID, Name: "Bruce Wayne", Balance: 10000}, nil)
+	serviceMock.On("GetAccount", accountID).Return(model.Account{ID: accountID, Name: "Bruce Wayne", Balance: 10000}, nil)
 	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts/:account_id/balance", nil)
 	ctx.SetParamNames("account_id")
 	ctx.SetParamValues(accountID)
@@ -180,7 +180,7 @@ func Test_GetAccountBalance_ShouldReturnBadRequest_WhenGotError(t *testing.T) {
 	accountID := "1"
 
 	serviceMock := setupService()
-	serviceMock.On("GetAccount", accountID).Return(nil, errors.New("some error"))
+	serviceMock.On("GetAccount", accountID).Return(model.EmptyAccount, errors.New("some error"))
 	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts/:account_id/balance", nil)
 	ctx.SetParamNames("account_id")
 	ctx.SetParamValues(accountID)
@@ -198,7 +198,7 @@ func Test_GetAccountBalance_ShouldReturnNotFound_WhenGotNotFoundError(t *testing
 	accountID := "1"
 
 	serviceMock := setupService()
-	serviceMock.On("GetAccount", accountID).Return(nil, errors.Wrap(service.ErrorNotFound, "some error"))
+	serviceMock.On("GetAccount", accountID).Return(model.EmptyAccount, errors.Wrap(service.ErrorNotFound, "some error"))
 	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts/:account_id/balance", nil)
 	ctx.SetParamNames("account_id")
 	ctx.SetParamValues(accountID)

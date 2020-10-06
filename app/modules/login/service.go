@@ -6,6 +6,7 @@ import (
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/jwt"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/pkg/errors"
 )
 
@@ -34,7 +35,7 @@ func (s serviceImp) SignIn(cpf, secret string) (string, error) {
 		return emptyToken, errors.New("an error occurred when trying to get account")
 	}
 
-	if account == nil {
+	if account == model.EmptyAccount {
 		return emptyToken, errors.Wrap(service.ErrorNotFound, "account not found")
 	}
 

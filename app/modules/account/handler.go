@@ -93,7 +93,7 @@ func (h *Handler) GetAccountBalance(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
 	}
 
-	return c.JSON(http.StatusOK, representation.ModelToAccountBalanceResponse(*account))
+	return c.JSON(http.StatusOK, representation.ModelToAccountBalanceResponse(account))
 }
 
 func badRequestError(c echo.Context, err error) error {
@@ -105,7 +105,7 @@ func getAccountsResponse(accounts []model.Account) representation.AccountsList {
 	accountListResponse := representation.AccountsList{}
 	accountListResponse.Accounts = make([]representation.AccountResponse, 0)
 	for _, account := range accounts {
-		accountListResponse.Accounts = append(accountListResponse.Accounts, *representation.ModelToAccountResponse(&account))
+		accountListResponse.Accounts = append(accountListResponse.Accounts, *representation.ModelToAccountResponse(account))
 	}
 	accountListResponse.Count = len(accountListResponse.Accounts)
 

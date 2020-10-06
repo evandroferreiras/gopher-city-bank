@@ -14,7 +14,7 @@ func NewInMemoryDBRepository() Repository {
 }
 
 // Create a new account.
-func (r *repositoryInMemory) Create(newAccount model.Account) (*model.Account, error) {
+func (r *repositoryInMemory) Create(newAccount model.Account) (model.Account, error) {
 	accountAdded := inmemorydb.AddAccount(newAccount)
 	return accountAdded, nil
 }
@@ -25,7 +25,7 @@ func (r *repositoryInMemory) GetAccounts() ([]model.Account, error) {
 }
 
 // getAccount return a account given an id
-func (r *repositoryInMemory) GetAccount(id string) (*model.Account, error) {
+func (r *repositoryInMemory) GetAccount(id string) (model.Account, error) {
 	account := inmemorydb.GetAccount(id)
 	return account, nil
 }

@@ -9,7 +9,7 @@ import (
 
 // Repository is an interface to Login repository
 type Repository interface {
-	GetAccountByCpf(cpf string) (*model.Account, error)
+	GetAccountByCpf(cpf string) (model.Account, error)
 }
 
 // BuildRepository is a factory constructor for Login Repository

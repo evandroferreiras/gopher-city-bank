@@ -18,10 +18,10 @@ func NewInMemoryDBRepository() Repository {
 // getAccount return a account given an id
 func (r repositoryImp) GetAccount(id string) (model.Account, error) {
 	account := inmemorydb.GetAccount(id)
-	if account == nil {
-		return model.Account{}, nil
+	if account == emptyAccount {
+		return emptyAccount, nil
 	}
-	return *account, nil
+	return account, nil
 }
 
 // UpdateAccountBalance subtracts the amount of money from accountID
