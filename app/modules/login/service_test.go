@@ -42,17 +42,17 @@ func Test_SignIn_ReturnError_WhenGotErrorFromRepo(t *testing.T) {
 	assert.Empty(t, jwtToken)
 }
 
-func Test_SignIn_ReturnNotFoundError_WhenAccountFromRepoIsNil(t *testing.T) {
+func Test_SignIn_ReturnErrorUsernameOrSecretInvalid_WhenAccountFromRepoIsNil(t *testing.T) {
 	repositoryMock := setupRepository()
 	repositoryMock.On("GetAccountByCpf", "").Return(model.EmptyAccount, nil)
 
 	service := serviceImp{repository: repositoryMock}
 	jwtToken, err := service.SignIn("", "")
-	assert.EqualError(t, errors.Cause(err), serviceError.ErrorNotFound.Error())
+	assert.EqualError(t, errors.Cause(err), serviceError.ErrorCpfOrSecretInvalid.Error())
 	assert.Empty(t, jwtToken)
 }
 
-func Test_SignIn_ReturnNotInvalidSecret_WhenSecretDoesntMatch(t *testing.T) {
+func Test_SignIn_ReturnErrorUsernameOrSecretInvalid_WhenSecretDoesntMatch(t *testing.T) {
 	cpf := "01015015055"
 	secret := "secret"
 	account := model.Account{ID: "980", Cpf: cpf, Secret: hash.EncryptString(secret)}
@@ -61,6 +61,6 @@ func Test_SignIn_ReturnNotInvalidSecret_WhenSecretDoesntMatch(t *testing.T) {
 
 	service := serviceImp{repository: repositoryMock}
 	jwtToken, err := service.SignIn(cpf, "wrongsecret")
-	assert.EqualError(t, errors.Cause(err), serviceError.ErrorInvalidSecret.Error())
+	assert.EqualError(t, errors.Cause(err), serviceError.ErrorCpfOrSecretInvalid.Error())
 	assert.Empty(t, jwtToken)
 }

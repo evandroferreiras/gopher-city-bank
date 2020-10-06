@@ -63,7 +63,7 @@ func Test_SignIn_ShouldReturnBadRequest_WhenBodyMissRequiredFields(t *testing.T)
 	assert.Equal(t, httputil.HTTPErrorValidateBody.Message, m["message"])
 }
 
-func Test_SignIn_ShouldReturnBadRequest_WhenGotGenericError(t *testing.T) {
+func Test_SignIn_ShouldReturnNotFound_WhenGotGenericError(t *testing.T) {
 	serviceMock := setupService()
 	serviceMock.On("SignIn", "12345612", "xxxxx").Return("", errors.New("some error"))
 
@@ -75,7 +75,7 @@ func Test_SignIn_ShouldReturnBadRequest_WhenGotGenericError(t *testing.T) {
 	rec, ctx := testutils.GetRecordedAndContext(echo.POST, "/api/login", strings.NewReader(reqJSON))
 	handler := Handler{LoginService: serviceMock}
 	assert.NoError(t, handler.SignIn(ctx))
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Equal(t, http.StatusNotFound, rec.Code)
 	m := testutils.ResponseToMap(rec.Body.Bytes())
 	assert.Equal(t, "some error", m["message"])
 }
