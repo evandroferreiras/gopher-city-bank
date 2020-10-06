@@ -4,6 +4,8 @@
 
 This is the Gopher ~~Gotham~~ Bank City app.
 
+##### Obs: Check [comments file](./COMMENTS.md) to read the technical decisions made during development
+
 ## Technologies and frameworks
 
 - Go 1.14+
