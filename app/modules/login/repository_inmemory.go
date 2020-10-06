@@ -13,7 +13,7 @@ func NewInMemoryDBRepository() Repository {
 	return &repositoryInMemory{}
 }
 
-func (r repositoryInMemory) GetAccountByCpf(cpf string) (*model.Account, error) {
+func (r repositoryInMemory) GetAccountByCpf(cpf string) (model.Account, error) {
 	account := inmemorydb.GetAccountByCpf(cpf)
 	return account, nil
 }

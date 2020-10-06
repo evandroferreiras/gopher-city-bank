@@ -31,13 +31,13 @@ func GetMemoryDB() *MemoryDatabase {
 }
 
 // AddAccount adds an account to the inMemoryDatabase
-func AddAccount(newAccount model.Account) *model.Account {
+func AddAccount(newAccount model.Account) model.Account {
 	db := GetMemoryDB()
 	db.Lock()
 	defer db.Unlock()
 	idx := len(db.accounts)
 
-	account := &model.Account{
+	account := model.Account{
 		ID:        fmt.Sprintf("%d", idx+1),
 		Name:      newAccount.Name,
 		Cpf:       newAccount.Cpf,
@@ -45,7 +45,7 @@ func AddAccount(newAccount model.Account) *model.Account {
 		Balance:   newAccount.Balance,
 		CreatedAt: time.Now(),
 	}
-	db.accounts[idx] = account
+	db.accounts[idx] = &account
 	return account
 }
 
@@ -64,7 +64,7 @@ func GetAccounts() []model.Account {
 }
 
 // GetAccount returns an account given an id
-func GetAccount(id string) *model.Account {
+func GetAccount(id string) model.Account {
 	db := GetMemoryDB()
 	db.RLock()
 	defer db.RUnlock()
@@ -72,24 +72,24 @@ func GetAccount(id string) *model.Account {
 	for _, account := range db.accounts {
 		if account.ID == id {
 
-			return account
+			return *account
 		}
 	}
-	return nil
+	return model.EmptyAccount
 }
 
 // GetAccountByCpf returns an account given an cpf
-func GetAccountByCpf(cpf string) *model.Account {
+func GetAccountByCpf(cpf string) model.Account {
 	db := GetMemoryDB()
 	db.RLock()
 	defer db.RUnlock()
 
 	for _, account := range db.accounts {
 		if account.Cpf == cpf {
-			return account
+			return *account
 		}
 	}
-	return nil
+	return model.EmptyAccount
 }
 
 // UpdateAccountBalance updates and account balance

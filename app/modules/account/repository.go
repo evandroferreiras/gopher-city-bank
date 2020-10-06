@@ -9,9 +9,9 @@ import (
 
 // Repository is an interface to Account repository
 type Repository interface {
-	Create(newAccount model.Account) (*model.Account, error)
+	Create(newAccount model.Account) (model.Account, error)
 	GetAccounts() ([]model.Account, error)
-	GetAccount(id string) (*model.Account, error)
+	GetAccount(id string) (model.Account, error)
 }
 
 // BuildRepository is a factory constructor for Account Repository

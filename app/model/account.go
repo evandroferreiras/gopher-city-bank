@@ -13,3 +13,6 @@ type Account struct {
 	Balance   float64   `bson:"balance" json:"balance"`
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }
+
+// EmptyAccount is a empty account model used to comparing
+var EmptyAccount = Account{}

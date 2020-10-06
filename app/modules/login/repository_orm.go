@@ -19,15 +19,15 @@ func NewORMRepository() Repository {
 	}
 }
 
-func (r repositoryORM) GetAccountByCpf(cpf string) (*model.Account, error) {
+func (r repositoryORM) GetAccountByCpf(cpf string) (model.Account, error) {
 	account := model.Account{}
 	tx := r.db.Where(&model.Account{Cpf: cpf}).First(&account)
 	if tx.Error != nil {
 		if tx.Error == gorm.ErrRecordNotFound {
 			logrus.Infof("Not found an account with CPF:'%+v'", cpf)
-			return nil, nil
+			return model.EmptyAccount, nil
 		}
-		return nil, tx.Error
+		return model.EmptyAccount, tx.Error
 	}
-	return &account, nil
+	return account, nil
 }

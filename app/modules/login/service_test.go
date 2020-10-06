@@ -19,7 +19,7 @@ func setupRepository() *mocks.Repository {
 func Test_SignIn_ReturnJwtToken_WhenCpfAndSecretIsValid(t *testing.T) {
 	cpf := "01015015055"
 	secret := "secret"
-	account := &model.Account{ID: "980", Cpf: cpf, Secret: hash.EncryptString(secret)}
+	account := model.Account{ID: "980", Cpf: cpf, Secret: hash.EncryptString(secret)}
 	repositoryMock := setupRepository()
 	repositoryMock.On("GetAccountByCpf", cpf).Return(account, nil)
 
@@ -33,7 +33,7 @@ func Test_SignIn_ReturnJwtToken_WhenCpfAndSecretIsValid(t *testing.T) {
 
 func Test_SignIn_ReturnError_WhenGotErrorFromRepo(t *testing.T) {
 	repositoryMock := setupRepository()
-	repositoryMock.On("GetAccountByCpf", "").Return(nil, errors.New("some error"))
+	repositoryMock.On("GetAccountByCpf", "").Return(model.EmptyAccount, errors.New("some error"))
 
 	service := serviceImp{repository: repositoryMock}
 	jwtToken, err := service.SignIn("", "")
@@ -44,7 +44,7 @@ func Test_SignIn_ReturnError_WhenGotErrorFromRepo(t *testing.T) {
 
 func Test_SignIn_ReturnNotFoundError_WhenAccountFromRepoIsNil(t *testing.T) {
 	repositoryMock := setupRepository()
-	repositoryMock.On("GetAccountByCpf", "").Return(nil, nil)
+	repositoryMock.On("GetAccountByCpf", "").Return(model.EmptyAccount, nil)
 
 	service := serviceImp{repository: repositoryMock}
 	jwtToken, err := service.SignIn("", "")
@@ -55,7 +55,7 @@ func Test_SignIn_ReturnNotFoundError_WhenAccountFromRepoIsNil(t *testing.T) {
 func Test_SignIn_ReturnNotInvalidSecret_WhenSecretDoesntMatch(t *testing.T) {
 	cpf := "01015015055"
 	secret := "secret"
-	account := &model.Account{ID: "980", Cpf: cpf, Secret: hash.EncryptString(secret)}
+	account := model.Account{ID: "980", Cpf: cpf, Secret: hash.EncryptString(secret)}
 	repositoryMock := setupRepository()
 	repositoryMock.On("GetAccountByCpf", cpf).Return(account, nil)
 

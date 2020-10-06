@@ -13,16 +13,14 @@ type Repository struct {
 }
 
 // GetAccountByCpf provides a mock function with given fields: cpf
-func (_m *Repository) GetAccountByCpf(cpf string) (*model.Account, error) {
+func (_m *Repository) GetAccountByCpf(cpf string) (model.Account, error) {
 	ret := _m.Called(cpf)
 
-	var r0 *model.Account
-	if rf, ok := ret.Get(0).(func(string) *model.Account); ok {
+	var r0 model.Account
+	if rf, ok := ret.Get(0).(func(string) model.Account); ok {
 		r0 = rf(cpf)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Account)
-		}
+		r0 = ret.Get(0).(model.Account)
 	}
 
 	var r1 error

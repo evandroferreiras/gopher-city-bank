@@ -22,9 +22,9 @@ __run-go-critic:
 run:__generage-swagger __run-go-critic
 	JWT_SIGNING_KEY=batman \
 	LOCAL_ENV=true \
-	USE_MEMORY_DB=false \
+	USE_MEMORY_DB=$(USE_MEMORY_DB) \
 	MYSQL_DSN=$(LOCALHOST_MYSQL_DSN) \
-	$(USE_MEMORY_DB)  go run -race ./app
+	go run -race ./app
 
 make test: __run-go-critic
 	go test -race ./...

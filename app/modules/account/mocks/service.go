@@ -13,16 +13,14 @@ type Service struct {
 }
 
 // Create provides a mock function with given fields: _a0
-func (_m *Service) Create(_a0 model.Account) (*model.Account, error) {
+func (_m *Service) Create(_a0 model.Account) (model.Account, error) {
 	ret := _m.Called(_a0)
 
-	var r0 *model.Account
-	if rf, ok := ret.Get(0).(func(model.Account) *model.Account); ok {
+	var r0 model.Account
+	if rf, ok := ret.Get(0).(func(model.Account) model.Account); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Account)
-		}
+		r0 = ret.Get(0).(model.Account)
 	}
 
 	var r1 error
@@ -36,16 +34,14 @@ func (_m *Service) Create(_a0 model.Account) (*model.Account, error) {
 }
 
 // GetAccount provides a mock function with given fields: id
-func (_m *Service) GetAccount(id string) (*model.Account, error) {
+func (_m *Service) GetAccount(id string) (model.Account, error) {
 	ret := _m.Called(id)
 
-	var r0 *model.Account
-	if rf, ok := ret.Get(0).(func(string) *model.Account); ok {
+	var r0 model.Account
+	if rf, ok := ret.Get(0).(func(string) model.Account); ok {
 		r0 = rf(id)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Account)
-		}
+		r0 = ret.Get(0).(model.Account)
 	}
 
 	var r1 error

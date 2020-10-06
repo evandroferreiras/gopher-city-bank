@@ -20,13 +20,13 @@ func setupRepository() *mocks.Repository {
 
 func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T) {
 	repositoryMock := setupRepository()
-	account := &model.Account{
+	account := model.Account{
 		ID:      "1",
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Balance: 1000000,
 	}
-	newAccount := &model.Account{
+	newAccount := model.Account{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  "xxxxx",
@@ -35,23 +35,23 @@ func Test_Create_ShouldReturnNewAccount_WhenCreateOnRepoWithSuccess(t *testing.T
 	repositoryMock.On("Create", mock.Anything).Return(account, nil)
 
 	service := serviceImp{repository: repositoryMock}
-	returnedAccount, err := service.Create(*newAccount)
+	returnedAccount, err := service.Create(newAccount)
 	assert.NoError(t, err)
 	assert.Equal(t, "1", returnedAccount.ID)
 }
 
 func Test_Create_ShouldReturnError_WhenCreateOnRepoWithError(t *testing.T) {
 	repositoryMock := setupRepository()
-	newAccount := &model.Account{
+	newAccount := model.Account{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  "xxxxx",
 		Balance: 1000000,
 	}
-	repositoryMock.On("Create", mock.Anything).Return(nil, errors.New("Some error"))
+	repositoryMock.On("Create", mock.Anything).Return(model.EmptyAccount, errors.New("Some error"))
 
 	service := serviceImp{repository: repositoryMock}
-	_, err := service.Create(*newAccount)
+	_, err := service.Create(newAccount)
 	assert.EqualError(t, errors.Cause(err), "Some error")
 }
 
@@ -60,13 +60,13 @@ func Test_Create_ShouldHashSecret(t *testing.T) {
 	hashedSecret := hash.EncryptString(secret)
 
 	repositoryMock := setupRepository()
-	account := &model.Account{
+	account := model.Account{
 		ID:      "1",
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Balance: 1000000,
 	}
-	newAccount := &model.Account{
+	newAccount := model.Account{
 		Name:    "Bruce Wayne",
 		Cpf:     "12345612",
 		Secret:  secret,
@@ -81,7 +81,7 @@ func Test_Create_ShouldHashSecret(t *testing.T) {
 		Return(account, nil)
 
 	service := serviceImp{repository: repositoryMock}
-	_, err := service.Create(*newAccount)
+	_, err := service.Create(newAccount)
 	assert.NoError(t, err)
 	assert.Equal(t, hashedSecret, capturedAccount.Secret)
 }
@@ -109,7 +109,7 @@ func Test_GetAccounts_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
 
 func Test_GetAccount_ShouldReturnAccount_WhenGetFromRepoWithSuccess(t *testing.T) {
 	repositoryMock := setupRepository()
-	account := &model.Account{ID: "1"}
+	account := model.Account{ID: "1"}
 	repositoryMock.On("GetAccount", account.ID).Return(account, nil)
 
 	service := serviceImp{repository: repositoryMock}
@@ -120,8 +120,8 @@ func Test_GetAccount_ShouldReturnAccount_WhenGetFromRepoWithSuccess(t *testing.T
 
 func Test_GetAccount_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
 	repositoryMock := setupRepository()
-	account := &model.Account{ID: "1"}
-	repositoryMock.On("GetAccount", account.ID).Return(nil, errors.New("some error"))
+	account := model.Account{ID: "1"}
+	repositoryMock.On("GetAccount", account.ID).Return(model.EmptyAccount, errors.New("some error"))
 
 	service := serviceImp{repository: repositoryMock}
 	_, err := service.GetAccount(account.ID)
@@ -131,7 +131,7 @@ func Test_GetAccount_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
 
 func Test_GetAccount_ShouldReturnNotFoundError_WhenAccountFromRepoIsNil(t *testing.T) {
 	repositoryMock := setupRepository()
-	repositoryMock.On("GetAccount", "1").Return(nil, nil)
+	repositoryMock.On("GetAccount", "1").Return(model.EmptyAccount, nil)
 
 	service := serviceImp{repository: repositoryMock}
 	_, err := service.GetAccount("1")
