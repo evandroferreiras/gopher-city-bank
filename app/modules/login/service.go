@@ -36,12 +36,12 @@ func (s serviceImp) SignIn(cpf, secret string) (string, error) {
 	}
 
 	if account == model.EmptyAccount {
-		return emptyToken, errors.Wrap(service.ErrorNotFound, "account not found")
+		return emptyToken, service.ErrorCpfOrSecretInvalid
 	}
 
 	receivedSecret := hash.EncryptString(secret)
 	if account.Secret != receivedSecret {
-		return emptyToken, errors.Wrap(service.ErrorInvalidSecret, "given secret is invalid")
+		return emptyToken, service.ErrorCpfOrSecretInvalid
 	}
 
 	return generateJwtToken(account.ID)

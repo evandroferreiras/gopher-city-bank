@@ -4,10 +4,8 @@ import (
 	"net/http"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/httputil"
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
 	"github.com/evandroferreiras/gopher-city-bank/app/representation"
 	"github.com/labstack/echo/v4"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -46,11 +44,7 @@ func (h Handler) SignIn(c echo.Context) error {
 	jwtToken, err := h.LoginService.SignIn(login.Cpf, login.Secret)
 	if err != nil {
 		logrus.Error(err)
-
-		if errors.Cause(err) == service.ErrorNotFound {
-			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
-		}
-		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
+		return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
 	}
 
 	return c.JSON(http.StatusOK, representation.LoginResponse{Token: jwtToken})
