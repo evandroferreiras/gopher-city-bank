@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/httputil"
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/testutils"
 	"github.com/evandroferreiras/gopher-city-bank/app/modules/login/mocks"
 	"github.com/labstack/echo/v4"
@@ -82,7 +82,7 @@ func Test_SignIn_ShouldReturnNotFound_WhenGotGenericError(t *testing.T) {
 
 func Test_SignIn_ShouldReturnNotFound_WhenGotNotFoundError(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("SignIn", "12345612", "xxxxx").Return("", errors.Wrap(service.ErrorNotFound, "some error"))
+	serviceMock.On("SignIn", "12345612", "xxxxx").Return("", errors.Wrap(customerror.ErrorNotFound, "some error"))
 
 	reqJSON := `{
 				  "cpf": "12345612",

@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/httputil"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/jwt"
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
 	"github.com/evandroferreiras/gopher-city-bank/app/representation"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
@@ -57,10 +57,10 @@ func (h Handler) TransferToAnotherAccount(c echo.Context) error {
 	if err != nil {
 		logrus.Error(err)
 
-		if errors.Cause(err) == service.ErrorNotFound {
+		if errors.Cause(err) == customerror.ErrorNotFound {
 			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
 		}
-		if errors.Cause(err) == service.ErrorNotEnoughAccountBalance {
+		if errors.Cause(err) == customerror.ErrorNotEnoughAccountBalance {
 			return c.JSON(http.StatusForbidden, httputil.NewError(http.StatusForbidden, err))
 		}
 
@@ -90,7 +90,7 @@ func (h Handler) List(c echo.Context) error {
 	withdraws, err := h.TransferService.GetAllWithdrawsOf(accountOriginID)
 	if err != nil {
 		logrus.Error(err)
-		if errors.Cause(err) == service.ErrorNotFound {
+		if errors.Cause(err) == customerror.ErrorNotFound {
 			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
 		}
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
@@ -99,7 +99,7 @@ func (h Handler) List(c echo.Context) error {
 	deposits, err := h.TransferService.GetAllDepositsTo(accountOriginID)
 	if err != nil {
 		logrus.Error(err)
-		if errors.Cause(err) == service.ErrorNotFound {
+		if errors.Cause(err) == customerror.ErrorNotFound {
 			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
 		}
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))

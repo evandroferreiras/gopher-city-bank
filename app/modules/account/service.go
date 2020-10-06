@@ -5,7 +5,7 @@ package account
 import (
 	"fmt"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
@@ -36,6 +36,9 @@ func (s *serviceImp) Create(account model.Account) (model.Account, error) {
 	account = encryptSecret(account)
 	createdAccount, err := s.repository.Create(account)
 	if err != nil {
+		if errors.Cause(err) == customerror.ErrorCPFDuplicated {
+			return model.EmptyAccount, err
+		}
 		return model.EmptyAccount, errors.Wrap(err, "an error occurred when trying to create account")
 	}
 	return createdAccount, nil
@@ -57,7 +60,7 @@ func (s *serviceImp) GetAccount(id string) (model.Account, error) {
 		return model.EmptyAccount, errors.Wrap(err, fmt.Sprintf("an error ocurren when trying to get account %v", id))
 	}
 	if account == model.EmptyAccount {
-		return model.EmptyAccount, errors.Wrap(service.ErrorNotFound, "account")
+		return model.EmptyAccount, errors.Wrap(customerror.ErrorNotFound, "account")
 	}
 
 	return account, nil

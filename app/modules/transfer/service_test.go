@@ -3,7 +3,7 @@ package transfer
 import (
 	"testing"
 
-	serviceError "github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	serviceError "github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/pkg/errors"
 

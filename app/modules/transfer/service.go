@@ -11,7 +11,7 @@ import (
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/constant"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -104,7 +104,7 @@ func (s serviceImp) makeTransfer(accountOrigin model.Account, accountDestination
 	}
 
 	if amount > accountOrigin.Balance {
-		return service.ErrorNotEnoughAccountBalance
+		return customerror.ErrorNotEnoughAccountBalance
 	}
 
 	logrus.Debugf("Origin:%v Destination:%v", accountOrigin.Balance, accountDestination.Balance)
@@ -145,7 +145,7 @@ func (s serviceImp) getAccount(accountID string) (model.Account, error) {
 		return emptyAccount, err
 	}
 	if account.ID == "" {
-		return emptyAccount, service.ErrorNotFound
+		return emptyAccount, customerror.ErrorNotFound
 	}
 	return account, nil
 }

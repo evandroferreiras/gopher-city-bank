@@ -3,7 +3,7 @@ package account
 import (
 	"net/http"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/pkg/errors"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
@@ -87,7 +87,7 @@ func (h *Handler) GetAccountBalance(c echo.Context) error {
 	account, err := h.AccountService.GetAccount(accountID)
 	if err != nil {
 		logrus.Error(err)
-		if errors.Cause(err) == service.ErrorNotFound {
+		if errors.Cause(err) == customerror.ErrorNotFound {
 			return c.JSON(http.StatusNotFound, httputil.NewError(http.StatusNotFound, err))
 		}
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))

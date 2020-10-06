@@ -3,9 +3,9 @@ package login
 import (
 	"testing"
 
+	serviceError "github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/jwt"
-	serviceError "github.com/evandroferreiras/gopher-city-bank/app/common/service"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/evandroferreiras/gopher-city-bank/app/modules/login/mocks"
 	"github.com/pkg/errors"

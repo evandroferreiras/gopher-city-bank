@@ -1,6 +1,7 @@
 package account
 
 import (
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/db/inmemorydb"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 )
@@ -15,6 +16,10 @@ func NewInMemoryDBRepository() Repository {
 
 // Create a new account.
 func (r *repositoryInMemory) Create(newAccount model.Account) (model.Account, error) {
+
+	if inmemorydb.GetAccountByCpf(newAccount.Cpf) != model.EmptyAccount {
+		return model.EmptyAccount, customerror.ErrorCPFDuplicated
+	}
 	accountAdded := inmemorydb.AddAccount(newAccount)
 	return accountAdded, nil
 }

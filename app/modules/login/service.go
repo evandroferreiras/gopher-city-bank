@@ -3,9 +3,9 @@
 package login
 
 import (
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/jwt"
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/pkg/errors"
 )
@@ -36,12 +36,12 @@ func (s serviceImp) SignIn(cpf, secret string) (string, error) {
 	}
 
 	if account == model.EmptyAccount {
-		return emptyToken, service.ErrorCpfOrSecretInvalid
+		return emptyToken, customerror.ErrorCpfOrSecretInvalid
 	}
 
 	receivedSecret := hash.EncryptString(secret)
 	if account.Secret != receivedSecret {
-		return emptyToken, service.ErrorCpfOrSecretInvalid
+		return emptyToken, customerror.ErrorCpfOrSecretInvalid
 	}
 
 	return generateJwtToken(account.ID)

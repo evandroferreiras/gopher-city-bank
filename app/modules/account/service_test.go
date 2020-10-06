@@ -3,7 +3,7 @@ package account
 import (
 	"testing"
 
-	serviceError "github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/hash"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
@@ -53,6 +53,21 @@ func Test_Create_ShouldReturnError_WhenCreateOnRepoWithError(t *testing.T) {
 	service := serviceImp{repository: repositoryMock}
 	_, err := service.Create(newAccount)
 	assert.EqualError(t, errors.Cause(err), "Some error")
+}
+
+func Test_Create_ShouldReturnCPFDuplicated_WhenCreateOnRepoWithCPFDuplicatedError(t *testing.T) {
+	repositoryMock := setupRepository()
+	newAccount := model.Account{
+		Name:    "Bruce Wayne",
+		Cpf:     "12345612",
+		Secret:  "xxxxx",
+		Balance: 1000000,
+	}
+	repositoryMock.On("Create", mock.Anything).Return(model.EmptyAccount, customerror.ErrorCPFDuplicated)
+
+	service := serviceImp{repository: repositoryMock}
+	_, err := service.Create(newAccount)
+	assert.EqualError(t, err, customerror.ErrorCPFDuplicated.Error())
 }
 
 func Test_Create_ShouldHashSecret(t *testing.T) {
@@ -136,6 +151,5 @@ func Test_GetAccount_ShouldReturnNotFoundError_WhenAccountFromRepoIsNil(t *testi
 	service := serviceImp{repository: repositoryMock}
 	_, err := service.GetAccount("1")
 
-	assert.EqualError(t, errors.Cause(err), serviceError.ErrorNotFound.Error())
-
+	assert.EqualError(t, errors.Cause(err), customerror.ErrorNotFound.Error())
 }

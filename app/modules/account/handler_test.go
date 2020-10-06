@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/pkg/errors"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
@@ -198,7 +198,7 @@ func Test_GetAccountBalance_ShouldReturnNotFound_WhenGotNotFoundError(t *testing
 	accountID := "1"
 
 	serviceMock := setupService()
-	serviceMock.On("GetAccount", accountID).Return(model.EmptyAccount, errors.Wrap(service.ErrorNotFound, "some error"))
+	serviceMock.On("GetAccount", accountID).Return(model.EmptyAccount, errors.Wrap(customerror.ErrorNotFound, "some error"))
 	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts/:account_id/balance", nil)
 	ctx.SetParamNames("account_id")
 	ctx.SetParamValues(accountID)

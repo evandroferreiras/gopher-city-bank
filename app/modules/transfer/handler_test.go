@@ -11,8 +11,8 @@ import (
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/evandroferreiras/gopher-city-bank/app/representation"
 
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/httputil"
-	"github.com/evandroferreiras/gopher-city-bank/app/common/service"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/testutils"
 	"github.com/evandroferreiras/gopher-city-bank/app/modules/transfer/mocks"
 	"github.com/labstack/echo/v4"
@@ -95,7 +95,7 @@ func Test_TransferToAnotherAccount_ShouldReturnBadRequest_WhenBodyMissRequiredFi
 
 func Test_TransferToAnotherAccount_ShouldReturnNotFound_WhenGotNotFoundError(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.Wrap(service.ErrorNotFound, "some error"))
+	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.Wrap(customerror.ErrorNotFound, "some error"))
 	reqJSON := fmt.Sprintf(`{
 				  "account_destination_id": "%v",
 				  "amount": %v
@@ -106,7 +106,7 @@ func Test_TransferToAnotherAccount_ShouldReturnNotFound_WhenGotNotFoundError(t *
 	t.Log(rec.Body.String())
 	assert.Equal(t, http.StatusNotFound, rec.Code)
 	m := testutils.ResponseToMap(rec.Body.Bytes())
-	assert.Contains(t, m["message"], service.ErrorNotFound.Error())
+	assert.Contains(t, m["message"], customerror.ErrorNotFound.Error())
 }
 
 func Test_TransferToAnotherAccount_ShouldReturnBadRequest_WhenGotGenericError(t *testing.T) {
@@ -127,7 +127,7 @@ func Test_TransferToAnotherAccount_ShouldReturnBadRequest_WhenGotGenericError(t 
 
 func Test_TransferToAnotherAccount_ShouldReturnStatusForbidden_WhenGotNotEnoughAccountBalanceError(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.Wrap(service.ErrorNotEnoughAccountBalance, "some error"))
+	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.Wrap(customerror.ErrorNotEnoughAccountBalance, "some error"))
 	reqJSON := fmt.Sprintf(`{
 				  "account_destination_id": "%v",
 				  "amount": %v
@@ -138,7 +138,7 @@ func Test_TransferToAnotherAccount_ShouldReturnStatusForbidden_WhenGotNotEnoughA
 	t.Log(rec.Body.String())
 	assert.Equal(t, http.StatusForbidden, rec.Code)
 	m := testutils.ResponseToMap(rec.Body.Bytes())
-	assert.Contains(t, m["message"], service.ErrorNotEnoughAccountBalance.Error())
+	assert.Contains(t, m["message"], customerror.ErrorNotEnoughAccountBalance.Error())
 }
 
 func Test_List_ShouldReturnStatusOK_WhenUserIsAuthenticated(t *testing.T) {
@@ -183,7 +183,7 @@ func Test_List_ShouldReturnStatusUnauthorized_WhenJWTIsInvalid(t *testing.T) {
 
 func Test_List_ShouldReturnNotFound_WhenGotNotFoundErrorOnWithdraw(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(nil, service.ErrorNotFound)
+	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(nil, customerror.ErrorNotFound)
 
 	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.GET, "/api/transfers", nil, accountOriginID)
 	handler := Handler{TransferService: serviceMock}
@@ -208,7 +208,7 @@ func Test_List_ShouldReturnBadRequest_WhenGotGenericErrorOnWithdraw(t *testing.T
 func Test_List_ShouldReturnNotFound_WhenGotNotFoundErrorOnDeposit(t *testing.T) {
 	serviceMock := setupService()
 	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(withdrawsTransfers, nil)
-	serviceMock.On("GetAllDepositsTo", accountOriginID).Return(nil, service.ErrorNotFound)
+	serviceMock.On("GetAllDepositsTo", accountOriginID).Return(nil, customerror.ErrorNotFound)
 
 	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.GET, "/api/transfers", nil, accountOriginID)
 	handler := Handler{TransferService: serviceMock}

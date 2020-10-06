@@ -1,6 +1,10 @@
 package account
 
+import "C"
 import (
+	"strings"
+
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/common/guid"
 	"github.com/evandroferreiras/gopher-city-bank/app/db"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
@@ -25,6 +29,9 @@ func (r *repositoryORM) Create(newAccount model.Account) (model.Account, error) 
 	newAccount.ID = guid.NewGUID()
 	tx := r.db.Create(&newAccount)
 	if tx.Error != nil {
+		if strings.Contains(tx.Error.Error(), "Duplicate entry") && strings.Contains(tx.Error.Error(), "accounts.cpf") {
+			return model.EmptyAccount, customerror.ErrorCPFDuplicated
+		}
 		return model.EmptyAccount, tx.Error
 	}
 	return newAccount, nil
