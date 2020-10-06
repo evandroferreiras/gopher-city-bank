@@ -3,7 +3,7 @@ package transfer
 import (
 	"testing"
 
-	serviceError "github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
+	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/evandroferreiras/gopher-city-bank/app/model"
 	"github.com/pkg/errors"
 
@@ -12,11 +12,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func setupRepository() *mocks.Repository {
-	return &mocks.Repository{}
-}
-
-func Test_TransferBetweenAccount_ShouldReturnNoErrorAndAccountOrigin_WhenSuccessfully(t *testing.T) {
+func Test_TransferBetweenAccount_ShouldReturnAccountOriginUpdated_WhenSuccessfully(t *testing.T) {
 	const amountToTransfer = 100
 
 	mockBuilder := newMockBuilder()
@@ -72,52 +68,52 @@ func Test_TransferBetweenAccount_FloatingPoint(t *testing.T) {
 
 func Test_TransferBetweenAccount_ShouldReturnNotFoundError_WhenOriginAccountDoestExists(t *testing.T) {
 	mockBuilder := newMockBuilder()
-	repositoryMock := mockBuilder.getAccountOrigin(emptyAccount, nil).build()
+	repositoryMock := mockBuilder.getAccountOrigin(model.EmptyAccount, nil).build()
 
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.Error(t, err)
-	assert.EqualError(t, errors.Cause(err), serviceError.ErrorNotFound.Error())
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.EqualError(t, errors.Cause(err), customerror.ErrorNotFound.Error())
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
 }
 
 func Test_TransferBetweenAccount_ShouldReturnError_WhenGotErrorFromRepoWhileGettingOriginAccount(t *testing.T) {
 	mockBuilder := newMockBuilder()
-	repositoryMock := mockBuilder.getAccountOrigin(emptyAccount, errors.New("some error")).build()
+	repositoryMock := mockBuilder.getAccountOrigin(model.EmptyAccount, errors.New("some error")).build()
 
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.Error(t, err)
 	assert.EqualError(t, errors.Cause(err), "some error")
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
 }
 
 func Test_TransferBetweenAccount_ShouldReturnNotFoundError_WhenDestinationAccountDoestExists(t *testing.T) {
 	mockBuilder := newMockBuilder()
 	repositoryMock := mockBuilder.
 		getAccountOrigin(accountOriginReturned, nil).
-		getAccountDestination(emptyAccount, nil).
+		getAccountDestination(model.EmptyAccount, nil).
 		build()
 
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.Error(t, err)
-	assert.EqualError(t, errors.Cause(err), serviceError.ErrorNotFound.Error())
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.EqualError(t, errors.Cause(err), customerror.ErrorNotFound.Error())
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
 }
 
 func Test_TransferBetweenAccount_ShouldReturnError_WhenGotErrorFromRepoWhileGettingDestinationAccount(t *testing.T) {
 	mockBuilder := newMockBuilder()
 	repositoryMock := mockBuilder.
 		getAccountOrigin(accountOriginReturned, nil).
-		getAccountDestination(emptyAccount, errors.New("some error")).
+		getAccountDestination(model.EmptyAccount, errors.New("some error")).
 		build()
 
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.Error(t, err)
 	assert.EqualError(t, errors.Cause(err), "some error")
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
 }
 
 func Test_TransferBetweenAccount_ShouldReturnError_WhenGotErrorFromStartTransaction(t *testing.T) {
@@ -132,7 +128,7 @@ func Test_TransferBetweenAccount_ShouldReturnError_WhenGotErrorFromStartTransact
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.Error(t, err)
 	assert.EqualError(t, errors.Cause(err), "transaction error")
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
 }
 
 func Test_TransferBetweenAccount_ShouldReturnError_WhenThereIsNotEnoughAccountBalance(t *testing.T) {
@@ -149,8 +145,31 @@ func Test_TransferBetweenAccount_ShouldReturnError_WhenThereIsNotEnoughAccountBa
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.Error(t, err)
-	assert.EqualError(t, errors.Cause(err), serviceError.ErrorNotEnoughAccountBalance.Error())
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.EqualError(t, errors.Cause(err), customerror.ErrorNotEnoughAccountBalance.Error())
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
+}
+
+func Test_TransferBetweenAccount_ShouldReturnErrorInvalidValue_WhenAmountIsNegative(t *testing.T) {
+	const amountToTransfer = -1
+
+	mockBuilder := newMockBuilder()
+	repositoryMock := mockBuilder.
+		getAccountOrigin(accountOriginReturned, nil).
+		getAccountOrigin(accountOriginReturned, nil).
+		getAccountDestination(accountDestinationReturned, nil).
+		startTransaction(nil).
+		commitTransaction(nil).
+		updateAccountBalanceOrigin(400, nil).
+		updateAccountBalanceDestination(100.2, nil).
+		logTransfer(nil).
+		build()
+
+	service := serviceImp{repository: repositoryMock}
+	accountReturned, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amountToTransfer)
+
+	assert.EqualError(t, err, customerror.ErrorInvalidValue.Error())
+	assert.Equal(t, model.EmptyAccount, accountReturned)
+
 }
 
 func Test_TransferBetweenAccount_ShouldReturnErrorAndRollback_WhenGotErrorWhileUpdatingOriginAccountBalance(t *testing.T) {
@@ -166,7 +185,7 @@ func Test_TransferBetweenAccount_ShouldReturnErrorAndRollback_WhenGotErrorWhileU
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.EqualError(t, errors.Cause(err), "update error")
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
 }
 
 func Test_TransferBetweenAccount_ShouldReturnErrorAndRollback_WhenGotErrorWhileUpdatingDestinationAccountBalance(t *testing.T) {
@@ -183,7 +202,7 @@ func Test_TransferBetweenAccount_ShouldReturnErrorAndRollback_WhenGotErrorWhileU
 	service := serviceImp{repository: repositoryMock}
 	returnedAccount, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amount)
 	assert.EqualError(t, errors.Cause(err), "update error")
-	assert.Equal(t, emptyAccount, returnedAccount)
+	assert.Equal(t, model.EmptyAccount, returnedAccount)
 
 }
 
@@ -206,7 +225,7 @@ func Test_TransferBetweenAccount_ShouldReturnErrorAndRollback_WhenGotErrorWhileT
 	accountReturned, err := service.TransferBetweenAccount(accountOriginID, accountDestinationID, amountToTransfer)
 
 	assert.Error(t, err)
-	assert.Equal(t, emptyAccount, accountReturned)
+	assert.Equal(t, model.EmptyAccount, accountReturned)
 	assert.Equal(t, accountOriginID, mockBuilder.CapturedTransfer.AccountOriginID)
 	assert.Equal(t, accountDestinationID, mockBuilder.CapturedTransfer.AccountDestinationID)
 	assert.Equal(t, float64(amountToTransfer), mockBuilder.CapturedTransfer.Amount)

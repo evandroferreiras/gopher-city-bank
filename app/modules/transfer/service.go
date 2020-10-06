@@ -26,7 +26,6 @@ type Service interface {
 	GetAllDepositsTo(accountOriginID string, page, size int) ([]model.Transfer, error)
 }
 
-var emptyAccount = model.Account{}
 var emptyTransfers []model.Transfer
 
 type serviceImp struct {
@@ -45,19 +44,23 @@ func (s serviceImp) TransferBetweenAccount(accountOriginID string, accountDestin
 	mutex.Lock()
 	defer mutex.Unlock()
 
+	if amount < 0 {
+		return model.EmptyAccount, customerror.ErrorInvalidValue
+	}
+
 	accountOrigin, err := s.getAccount(accountOriginID)
 	if err != nil {
-		return emptyAccount, errors.Wrap(err, "account origin")
+		return model.EmptyAccount, errors.Wrap(err, "account origin")
 	}
 
 	accountDestination, err := s.getAccount(accountDestinationID)
 	if err != nil {
-		return emptyAccount, errors.Wrap(err, "account destination")
+		return model.EmptyAccount, errors.Wrap(err, "account destination")
 	}
 
 	err = s.makeTransfer(accountOrigin, accountDestination, amount)
 	if err != nil {
-		return emptyAccount, err
+		return model.EmptyAccount, err
 	}
 
 	return s.repository.GetAccount(accountOriginID)
@@ -142,10 +145,10 @@ func (s serviceImp) makeTransfer(accountOrigin model.Account, accountDestination
 func (s serviceImp) getAccount(accountID string) (model.Account, error) {
 	account, err := s.repository.GetAccount(accountID)
 	if err != nil {
-		return emptyAccount, err
+		return model.EmptyAccount, err
 	}
 	if account.ID == "" {
-		return emptyAccount, customerror.ErrorNotFound
+		return model.EmptyAccount, customerror.ErrorNotFound
 	}
 	return account, nil
 }

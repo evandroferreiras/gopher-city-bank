@@ -70,6 +70,21 @@ func Test_Create_ShouldReturnCPFDuplicated_WhenCreateOnRepoWithCPFDuplicatedErro
 	assert.EqualError(t, err, customerror.ErrorCPFDuplicated.Error())
 }
 
+func Test_Create_ShouldReturnErrorInvalidValue_WhenBalanceIsNegative(t *testing.T) {
+	repositoryMock := setupRepository()
+	newAccount := model.Account{
+		Name:    "Bruce Wayne",
+		Cpf:     "12345612",
+		Secret:  "xxxxx",
+		Balance: -1,
+	}
+	repositoryMock.On("Create", mock.Anything).Return(newAccount, nil)
+
+	service := serviceImp{repository: repositoryMock}
+	_, err := service.Create(newAccount)
+	assert.EqualError(t, err, customerror.ErrorInvalidValue.Error())
+}
+
 func Test_Create_ShouldHashSecret(t *testing.T) {
 	secret := "ihatejoker"
 	hashedSecret := hash.EncryptString(secret)

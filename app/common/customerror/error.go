@@ -13,3 +13,6 @@ var ErrorNotEnoughAccountBalance = errors.New("there is not enough account balan
 
 // ErrorCPFDuplicated returns when the CPF is already registered in DB
 var ErrorCPFDuplicated = errors.New("CPF already in use")
+
+// ErrorInvalidValue returns when the balance/amount is invalid
+var ErrorInvalidValue = errors.New("Amount or Balance value is invalid. Should not be negative")

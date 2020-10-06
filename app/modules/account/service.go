@@ -32,6 +32,9 @@ func NewService() Service {
 
 // Create a new account.
 func (s *serviceImp) Create(account model.Account) (model.Account, error) {
+	if account.Balance < 0 {
+		return model.EmptyAccount, customerror.ErrorInvalidValue
+	}
 
 	account = encryptSecret(account)
 	createdAccount, err := s.repository.Create(account)

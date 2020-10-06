@@ -95,7 +95,7 @@ func Test_TransferToAnotherAccount_ShouldReturnBadRequest_WhenBodyMissRequiredFi
 
 func Test_TransferToAnotherAccount_ShouldReturnNotFound_WhenGotNotFoundError(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.Wrap(customerror.ErrorNotFound, "some error"))
+	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(model.EmptyAccount, errors.Wrap(customerror.ErrorNotFound, "some error"))
 	reqJSON := fmt.Sprintf(`{
 				  "account_destination_id": "%v",
 				  "amount": %v
@@ -111,7 +111,7 @@ func Test_TransferToAnotherAccount_ShouldReturnNotFound_WhenGotNotFoundError(t *
 
 func Test_TransferToAnotherAccount_ShouldReturnBadRequest_WhenGotGenericError(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.New("some error"))
+	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(model.EmptyAccount, errors.New("some error"))
 	reqJSON := fmt.Sprintf(`{
 				  "account_destination_id": "%v",
 				  "amount": %v
@@ -127,7 +127,7 @@ func Test_TransferToAnotherAccount_ShouldReturnBadRequest_WhenGotGenericError(t 
 
 func Test_TransferToAnotherAccount_ShouldReturnStatusForbidden_WhenGotNotEnoughAccountBalanceError(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(emptyAccount, errors.Wrap(customerror.ErrorNotEnoughAccountBalance, "some error"))
+	serviceMock.On("TransferBetweenAccount", accountOriginID, accountDestinationID, amount).Return(model.EmptyAccount, errors.Wrap(customerror.ErrorNotEnoughAccountBalance, "some error"))
 	reqJSON := fmt.Sprintf(`{
 				  "account_destination_id": "%v",
 				  "amount": %v

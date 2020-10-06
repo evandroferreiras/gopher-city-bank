@@ -18,14 +18,14 @@ func NewInMemoryDBRepository() Repository {
 // getAccount return a account given an id
 func (r repositoryImp) GetAccount(id string) (model.Account, error) {
 	account := inmemorydb.GetAccount(id)
-	if account == emptyAccount {
-		return emptyAccount, nil
+	if account == model.EmptyAccount {
+		return model.EmptyAccount, nil
 	}
 	return account, nil
 }
 
 // UpdateAccountBalance subtracts the amount of money from accountID
-func (r repositoryImp) UpdateAccountBalance(ctx context.Context, id string, newBalance float64) error {
+func (r repositoryImp) UpdateAccountBalance(_ context.Context, id string, newBalance float64) error {
 	inmemorydb.UpdateAccountBalance(id, newBalance)
 	return nil
 }
@@ -34,13 +34,13 @@ func (r repositoryImp) StartTransaction() (interface{}, error) {
 	return nil, nil
 }
 
-func (r repositoryImp) CommitTransaction(ctx context.Context) {
+func (r repositoryImp) CommitTransaction(context.Context) {
 }
 
-func (r repositoryImp) RollbackTransaction(ctx context.Context) {
+func (r repositoryImp) RollbackTransaction(context.Context) {
 }
 
-func (r repositoryImp) LogTransfer(ctx context.Context, transfer model.Transfer) error {
+func (r repositoryImp) LogTransfer(_ context.Context, transfer model.Transfer) error {
 	inmemorydb.LogTransfer(transfer)
 	return nil
 }
