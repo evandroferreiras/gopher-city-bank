@@ -10,7 +10,7 @@ import (
 // Repository is an interface to Account repository
 type Repository interface {
 	Create(newAccount model.Account) (model.Account, error)
-	GetAccounts() ([]model.Account, error)
+	GetAccounts(page int, size int) ([]model.Account, error)
 	GetAccount(id string) (model.Account, error)
 }
 

@@ -25,8 +25,8 @@ func (r *repositoryInMemory) Create(newAccount model.Account) (model.Account, er
 }
 
 // GetAccounts lists all accounts
-func (r *repositoryInMemory) GetAccounts() ([]model.Account, error) {
-	return inmemorydb.GetAccounts(), nil
+func (r *repositoryInMemory) GetAccounts(page int, size int) ([]model.Account, error) {
+	return inmemorydb.GetAccounts(page, size), nil
 }
 
 // getAccount return a account given an id

@@ -50,15 +50,19 @@ func AddAccount(newAccount model.Account) model.Account {
 }
 
 // GetAccounts returns all accounts from the inMemoryDatabase
-func GetAccounts() []model.Account {
+func GetAccounts(page int, size int) []model.Account {
 	db := GetMemoryDB()
 	db.RLock()
 	defer db.RUnlock()
 
 	var accounts = make([]model.Account, 0)
 
-	for _, account := range db.accounts {
-		accounts = append(accounts, *account)
+	total := page * size
+	initial := total - (size)
+	for i, account := range db.accounts {
+		if i >= initial && i < total {
+			accounts = append(accounts, *account)
+		}
 	}
 	return accounts
 }

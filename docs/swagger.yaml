@@ -123,6 +123,15 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: page to return
+        in: query
+        name: page
+        type: integer
+      - description: page size to return
+        in: query
+        name: size
+        type: integer
       produces:
       - application/json
       responses:

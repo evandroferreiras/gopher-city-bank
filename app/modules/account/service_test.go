@@ -105,20 +105,20 @@ func Test_GetAccounts_ShouldReturnList_WhenGetFromRepoWithSuccess(t *testing.T) 
 	repositoryMock := setupRepository()
 
 	mockAccounts := []model.Account{{}}
-	repositoryMock.On("GetAccounts").Return(mockAccounts, nil)
+	repositoryMock.On("GetAccounts", 1, 10).Return(mockAccounts, nil)
 
 	service := serviceImp{repository: repositoryMock}
-	accounts, err := service.GetAccounts()
+	accounts, err := service.GetAccounts(1, 10)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(accounts))
 }
 
 func Test_GetAccounts_ShouldReturnError_WhenGetErrorFromRepo(t *testing.T) {
 	repositoryMock := setupRepository()
-	repositoryMock.On("GetAccounts").Return(nil, errors.New("some error"))
+	repositoryMock.On("GetAccounts", 1, 10).Return(nil, errors.New("some error"))
 
 	service := serviceImp{repository: repositoryMock}
-	_, err := service.GetAccounts()
+	_, err := service.GetAccounts(1, 10)
 	assert.EqualError(t, errors.Cause(err), "some error")
 }
 

@@ -2,6 +2,7 @@ package account
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
 	"github.com/pkg/errors"
@@ -58,12 +59,23 @@ func (h *Handler) CreateAccount(c echo.Context) error {
 // @Tags accounts
 // @Accept  json
 // @Produce  json
+// @Param page query int false "page to return"
+// @Param size query int false "page size to return"
 // @Success 200 {object} representation.AccountsList
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/accounts [get]
 // GetAllAccounts returns all accounts
 func (h *Handler) GetAllAccounts(c echo.Context) error {
-	accounts, err := h.AccountService.GetAccounts()
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	if err != nil {
+		page = 1
+	}
+	size, err := strconv.Atoi(c.QueryParam("size"))
+	if err != nil {
+		size = 10
+	}
+
+	accounts, err := h.AccountService.GetAccounts(page, size)
 	if err != nil {
 		return badRequestError(c, err)
 	}

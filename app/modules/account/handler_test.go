@@ -133,7 +133,7 @@ func Test_CreateAccount_ShouldReturnBadRequest_WhenBalanceIsLessThanZero(t *test
 
 func Test_GetAllAccounts_ShouldReturnStatusOk_WhenReturnWithSuccess(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAccounts").Return([]model.Account{{ID: "1"}, {ID: "2"}}, nil)
+	serviceMock.On("GetAccounts", 1, 10).Return([]model.Account{{ID: "1"}, {ID: "2"}}, nil)
 	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts", nil)
 	handler := Handler{AccountService: serviceMock}
 	assert.NoError(t, handler.GetAllAccounts(ctx))
@@ -148,7 +148,7 @@ func Test_GetAllAccounts_ShouldReturnStatusOk_WhenReturnWithSuccess(t *testing.T
 
 func Test_GetAllAccounts_ShouldReturnBadRequest_WhenGotError(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAccounts").Return(nil, errors.New("some error"))
+	serviceMock.On("GetAccounts", 1, 10).Return(nil, errors.New("some error"))
 	rec, ctx := testutils.GetRecordedAndContext(echo.GET, "/api/accounts", nil)
 	handler := Handler{AccountService: serviceMock}
 

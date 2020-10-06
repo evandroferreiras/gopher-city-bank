@@ -54,13 +54,13 @@ func (_m *Repository) GetAccount(id string) (model.Account, error) {
 	return r0, r1
 }
 
-// GetAccounts provides a mock function with given fields:
-func (_m *Repository) GetAccounts() ([]model.Account, error) {
-	ret := _m.Called()
+// GetAccounts provides a mock function with given fields: page, size
+func (_m *Repository) GetAccounts(page int, size int) ([]model.Account, error) {
+	ret := _m.Called(page, size)
 
 	var r0 []model.Account
-	if rf, ok := ret.Get(0).(func() []model.Account); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(int, int) []model.Account); ok {
+		r0 = rf(page, size)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Account)
@@ -68,8 +68,8 @@ func (_m *Repository) GetAccounts() ([]model.Account, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(int, int) error); ok {
+		r1 = rf(page, size)
 	} else {
 		r1 = ret.Error(1)
 	}

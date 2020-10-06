@@ -38,9 +38,10 @@ func (r *repositoryORM) Create(newAccount model.Account) (model.Account, error) 
 }
 
 // GetAccounts lists all accounts
-func (r *repositoryORM) GetAccounts() ([]model.Account, error) {
+func (r *repositoryORM) GetAccounts(page int, size int) ([]model.Account, error) {
 	var accounts []model.Account
-	tx := r.db.Model(&model.Account{}).Find(&accounts)
+	offset := (page - 1) * size
+	tx := r.db.Offset(offset).Limit(size).Model(&model.Account{}).Find(&accounts)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

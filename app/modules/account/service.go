@@ -15,7 +15,7 @@ import (
 // Service is an interface to Account service
 type Service interface {
 	Create(model.Account) (model.Account, error)
-	GetAccounts() ([]model.Account, error)
+	GetAccounts(page, size int) ([]model.Account, error)
 	GetAccount(id string) (model.Account, error)
 }
 
@@ -45,8 +45,8 @@ func (s *serviceImp) Create(account model.Account) (model.Account, error) {
 }
 
 // GetAccounts lists all accounts
-func (s *serviceImp) GetAccounts() ([]model.Account, error) {
-	accounts, err := s.repository.GetAccounts()
+func (s *serviceImp) GetAccounts(page, size int) ([]model.Account, error) {
+	accounts, err := s.repository.GetAccounts(page, size)
 	if err != nil {
 		return nil, errors.Wrap(err, "an error occurred when trying to get accounts")
 	}
