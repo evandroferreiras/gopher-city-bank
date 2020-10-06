@@ -152,8 +152,8 @@ func Test_List_ShouldReturnStatusOK_WhenUserIsAuthenticated(t *testing.T) {
 	}}
 
 	serviceMock := setupService()
-	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(withdrawsTransfers, nil)
-	serviceMock.On("GetAllDepositsTo", accountOriginID).Return(depositsTransfers, nil)
+	serviceMock.On("GetAllWithdrawsOf", accountOriginID, 1, 10).Return(withdrawsTransfers, nil)
+	serviceMock.On("GetAllDepositsTo", accountOriginID, 1, 10).Return(depositsTransfers, nil)
 
 	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.GET, "/api/transfers", nil, accountOriginID)
 
@@ -183,7 +183,7 @@ func Test_List_ShouldReturnStatusUnauthorized_WhenJWTIsInvalid(t *testing.T) {
 
 func Test_List_ShouldReturnNotFound_WhenGotNotFoundErrorOnWithdraw(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(nil, customerror.ErrorNotFound)
+	serviceMock.On("GetAllWithdrawsOf", accountOriginID, 1, 10).Return(nil, customerror.ErrorNotFound)
 
 	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.GET, "/api/transfers", nil, accountOriginID)
 	handler := Handler{TransferService: serviceMock}
@@ -195,7 +195,7 @@ func Test_List_ShouldReturnNotFound_WhenGotNotFoundErrorOnWithdraw(t *testing.T)
 
 func Test_List_ShouldReturnBadRequest_WhenGotGenericErrorOnWithdraw(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(nil, errors.New("some error"))
+	serviceMock.On("GetAllWithdrawsOf", accountOriginID, 1, 10).Return(nil, errors.New("some error"))
 
 	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.GET, "/api/transfers", nil, accountOriginID)
 	handler := Handler{TransferService: serviceMock}
@@ -207,8 +207,8 @@ func Test_List_ShouldReturnBadRequest_WhenGotGenericErrorOnWithdraw(t *testing.T
 
 func Test_List_ShouldReturnNotFound_WhenGotNotFoundErrorOnDeposit(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(withdrawsTransfers, nil)
-	serviceMock.On("GetAllDepositsTo", accountOriginID).Return(nil, customerror.ErrorNotFound)
+	serviceMock.On("GetAllWithdrawsOf", accountOriginID, 1, 10).Return(withdrawsTransfers, nil)
+	serviceMock.On("GetAllDepositsTo", accountOriginID, 1, 10).Return(nil, customerror.ErrorNotFound)
 
 	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.GET, "/api/transfers", nil, accountOriginID)
 	handler := Handler{TransferService: serviceMock}
@@ -220,8 +220,8 @@ func Test_List_ShouldReturnNotFound_WhenGotNotFoundErrorOnDeposit(t *testing.T) 
 
 func Test_List_ShouldReturnBadRequest_WhenGotGenericErrorOnDeposit(t *testing.T) {
 	serviceMock := setupService()
-	serviceMock.On("GetAllWithdrawsOf", accountOriginID).Return(withdrawsTransfers, nil)
-	serviceMock.On("GetAllDepositsTo", accountOriginID).Return(nil, errors.New("some error"))
+	serviceMock.On("GetAllWithdrawsOf", accountOriginID, 1, 10).Return(withdrawsTransfers, nil)
+	serviceMock.On("GetAllDepositsTo", accountOriginID, 1, 10).Return(nil, errors.New("some error"))
 
 	rec, ctx := testutils.GetRecordedAndContextWithJWT(echo.GET, "/api/transfers", nil, accountOriginID)
 	handler := Handler{TransferService: serviceMock}

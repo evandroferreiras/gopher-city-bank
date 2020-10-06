@@ -45,10 +45,10 @@ func (r repositoryImp) LogTransfer(ctx context.Context, transfer model.Transfer)
 	return nil
 }
 
-func (r repositoryImp) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
-	return inmemorydb.GetAllWithdrawsOf(accountOriginID), nil
+func (r repositoryImp) GetAllWithdrawsOf(accountOriginID string, page, size int) ([]model.Transfer, error) {
+	return inmemorydb.GetAllWithdrawsOf(accountOriginID, page, size), nil
 }
 
-func (r repositoryImp) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
-	return inmemorydb.GetAllDepositsTo(accountOriginID), nil
+func (r repositoryImp) GetAllDepositsTo(accountOriginID string, page, size int) ([]model.Transfer, error) {
+	return inmemorydb.GetAllDepositsTo(accountOriginID, page, size), nil
 }

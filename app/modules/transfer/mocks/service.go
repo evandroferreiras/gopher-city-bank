@@ -12,13 +12,13 @@ type Service struct {
 	mock.Mock
 }
 
-// GetAllDepositsTo provides a mock function with given fields: accountOriginID
-func (_m *Service) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
-	ret := _m.Called(accountOriginID)
+// GetAllDepositsTo provides a mock function with given fields: accountOriginID, page, size
+func (_m *Service) GetAllDepositsTo(accountOriginID string, page int, size int) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID, page, size)
 
 	var r0 []model.Transfer
-	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
-		r0 = rf(accountOriginID)
+	if rf, ok := ret.Get(0).(func(string, int, int) []model.Transfer); ok {
+		r0 = rf(accountOriginID, page, size)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Transfer)
@@ -26,8 +26,8 @@ func (_m *Service) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, e
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(accountOriginID)
+	if rf, ok := ret.Get(1).(func(string, int, int) error); ok {
+		r1 = rf(accountOriginID, page, size)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -35,13 +35,13 @@ func (_m *Service) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, e
 	return r0, r1
 }
 
-// GetAllWithdrawsOf provides a mock function with given fields: accountOriginID
-func (_m *Service) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
-	ret := _m.Called(accountOriginID)
+// GetAllWithdrawsOf provides a mock function with given fields: accountOriginID, page, size
+func (_m *Service) GetAllWithdrawsOf(accountOriginID string, page int, size int) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID, page, size)
 
 	var r0 []model.Transfer
-	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
-		r0 = rf(accountOriginID)
+	if rf, ok := ret.Get(0).(func(string, int, int) []model.Transfer); ok {
+		r0 = rf(accountOriginID, page, size)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Transfer)
@@ -49,8 +49,8 @@ func (_m *Service) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(accountOriginID)
+	if rf, ok := ret.Get(1).(func(string, int, int) error); ok {
+		r1 = rf(accountOriginID, page, size)
 	} else {
 		r1 = ret.Error(1)
 	}

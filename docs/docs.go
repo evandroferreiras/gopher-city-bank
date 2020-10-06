@@ -232,6 +232,20 @@ var doc = `{
                     "transfer"
                 ],
                 "summary": "List all transfers of an account",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page to return",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page size to return",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

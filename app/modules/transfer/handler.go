@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/evandroferreiras/gopher-city-bank/app/common/customerror"
@@ -75,6 +76,8 @@ func (h Handler) TransferToAnotherAccount(c echo.Context) error {
 // @Description List all transfers of an account
 // @Tags transfer
 // @Produce json
+// @Param page query int false "page to return"
+// @Param size query int false "page size to return"
 // @Success 200 {object} representation.TransferListResponse
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 401 {object} httputil.HTTPError
@@ -82,12 +85,21 @@ func (h Handler) TransferToAnotherAccount(c echo.Context) error {
 // @Security ApiKeyAuth
 // @Router /api/transfers [get]
 func (h Handler) List(c echo.Context) error {
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	if err != nil {
+		page = 1
+	}
+	size, err := strconv.Atoi(c.QueryParam("size"))
+	if err != nil {
+		size = 10
+	}
+
 	accountOriginID, err := getAccountIDFromHeader(c)
 	if err != nil || accountOriginID == emptyAccountID {
 		return err
 	}
 
-	withdraws, err := h.TransferService.GetAllWithdrawsOf(accountOriginID)
+	withdraws, err := h.TransferService.GetAllWithdrawsOf(accountOriginID, page, size)
 	if err != nil {
 		logrus.Error(err)
 		if errors.Cause(err) == customerror.ErrorNotFound {
@@ -96,7 +108,7 @@ func (h Handler) List(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, httputil.NewError(http.StatusBadRequest, err))
 	}
 
-	deposits, err := h.TransferService.GetAllDepositsTo(accountOriginID)
+	deposits, err := h.TransferService.GetAllDepositsTo(accountOriginID, page, size)
 	if err != nil {
 		logrus.Error(err)
 		if errors.Cause(err) == customerror.ErrorNotFound {

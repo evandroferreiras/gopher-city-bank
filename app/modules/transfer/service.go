@@ -22,8 +22,8 @@ var mutex sync.Mutex
 // Service is an interface to Transfer service
 type Service interface {
 	TransferBetweenAccount(accountOriginID string, accountDestinationID string, amount float64) (model.Account, error)
-	GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error)
-	GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error)
+	GetAllWithdrawsOf(accountOriginID string, page, size int) ([]model.Transfer, error)
+	GetAllDepositsTo(accountOriginID string, page, size int) ([]model.Transfer, error)
 }
 
 var emptyAccount = model.Account{}
@@ -65,13 +65,13 @@ func (s serviceImp) TransferBetweenAccount(accountOriginID string, accountDestin
 }
 
 // GetAllWithdrawsOf account origin
-func (s serviceImp) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
+func (s serviceImp) GetAllWithdrawsOf(accountOriginID string, page, size int) ([]model.Transfer, error) {
 	_, err := s.getAccount(accountOriginID)
 	if err != nil {
 		return emptyTransfers, errors.Wrap(err, "account origin")
 	}
 
-	transfers, err := s.repository.GetAllWithdrawsOf(accountOriginID)
+	transfers, err := s.repository.GetAllWithdrawsOf(accountOriginID, page, size)
 	if err != nil {
 		return emptyTransfers, errors.Wrap(err, fmt.Sprintf("error when trying to get withdraws of %+v", accountOriginID))
 	}
@@ -80,13 +80,13 @@ func (s serviceImp) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer,
 }
 
 // GetAllDepositsTo account origin
-func (s serviceImp) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
+func (s serviceImp) GetAllDepositsTo(accountOriginID string, page, size int) ([]model.Transfer, error) {
 	_, err := s.getAccount(accountOriginID)
 	if err != nil {
 		return emptyTransfers, errors.Wrap(err, "account origin")
 	}
 
-	transfers, err := s.repository.GetAllDepositsTo(accountOriginID)
+	transfers, err := s.repository.GetAllDepositsTo(accountOriginID, page, size)
 	if err != nil {
 		return emptyTransfers, errors.Wrap(err, fmt.Sprintf("error when trying to get deposits to %+v", accountOriginID))
 	}

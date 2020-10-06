@@ -122,32 +122,40 @@ func LogTransfer(newTransfer model.Transfer) {
 }
 
 // GetAllWithdrawsOf account origin
-func GetAllWithdrawsOf(accountOriginID string) []model.Transfer {
+func GetAllWithdrawsOf(accountOriginID string, page int, size int) []model.Transfer {
 	db := GetMemoryDB()
 	db.RLock()
 	defer db.RUnlock()
 
 	var transfers = make([]model.Transfer, 0)
 
-	for _, transfer := range db.transfers {
+	total := page * size
+	initial := total - (size)
+	for i, transfer := range db.transfers {
 		if transfer.AccountOriginID == accountOriginID {
-			transfers = append(transfers, *transfer)
+			if i >= initial && i < total {
+				transfers = append(transfers, *transfer)
+			}
 		}
 	}
 	return transfers
 }
 
 // GetAllDepositsTo account origin
-func GetAllDepositsTo(accountOriginID string) []model.Transfer {
+func GetAllDepositsTo(accountOriginID string, page int, size int) []model.Transfer {
 	db := GetMemoryDB()
 	db.RLock()
 	defer db.RUnlock()
 
 	var transfers = make([]model.Transfer, 0)
 
-	for _, transfer := range db.transfers {
+	total := page * size
+	initial := total - (size)
+	for i, transfer := range db.transfers {
 		if transfer.AccountDestinationID == accountOriginID {
-			transfers = append(transfers, *transfer)
+			if i >= initial && i < total {
+				transfers = append(transfers, *transfer)
+			}
 		}
 	}
 	return transfers

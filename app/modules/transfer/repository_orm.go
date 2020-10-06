@@ -77,18 +77,20 @@ func (r repositoryORM) RollbackTransaction(ctx context.Context) {
 	tx.Rollback()
 }
 
-func (r repositoryORM) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
+func (r repositoryORM) GetAllWithdrawsOf(accountOriginID string, page, size int) ([]model.Transfer, error) {
 	var withdraws []model.Transfer
-	tx := r.db.Where(&model.Transfer{AccountOriginID: accountOriginID}).Find(&withdraws)
+	offset := (page - 1) * size
+	tx := r.db.Offset(offset).Limit(size).Where(&model.Transfer{AccountOriginID: accountOriginID}).Find(&withdraws)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 	return withdraws, nil
 }
 
-func (r repositoryORM) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
+func (r repositoryORM) GetAllDepositsTo(accountOriginID string, page, size int) ([]model.Transfer, error) {
 	var deposits []model.Transfer
-	tx := r.db.Where(&model.Transfer{AccountDestinationID: accountOriginID}).Find(&deposits)
+	offset := (page - 1) * size
+	tx := r.db.Offset(offset).Limit(size).Where(&model.Transfer{AccountDestinationID: accountOriginID}).Find(&deposits)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

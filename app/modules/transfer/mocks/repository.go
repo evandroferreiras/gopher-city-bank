@@ -40,13 +40,13 @@ func (_m *Repository) GetAccount(id string) (model.Account, error) {
 	return r0, r1
 }
 
-// GetAllDepositsTo provides a mock function with given fields: accountOriginID
-func (_m *Repository) GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error) {
-	ret := _m.Called(accountOriginID)
+// GetAllDepositsTo provides a mock function with given fields: accountOriginID, page, size
+func (_m *Repository) GetAllDepositsTo(accountOriginID string, page int, size int) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID, page, size)
 
 	var r0 []model.Transfer
-	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
-		r0 = rf(accountOriginID)
+	if rf, ok := ret.Get(0).(func(string, int, int) []model.Transfer); ok {
+		r0 = rf(accountOriginID, page, size)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Transfer)
@@ -54,8 +54,8 @@ func (_m *Repository) GetAllDepositsTo(accountOriginID string) ([]model.Transfer
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(accountOriginID)
+	if rf, ok := ret.Get(1).(func(string, int, int) error); ok {
+		r1 = rf(accountOriginID, page, size)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -63,13 +63,13 @@ func (_m *Repository) GetAllDepositsTo(accountOriginID string) ([]model.Transfer
 	return r0, r1
 }
 
-// GetAllWithdrawsOf provides a mock function with given fields: accountOriginID
-func (_m *Repository) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error) {
-	ret := _m.Called(accountOriginID)
+// GetAllWithdrawsOf provides a mock function with given fields: accountOriginID, page, size
+func (_m *Repository) GetAllWithdrawsOf(accountOriginID string, page int, size int) ([]model.Transfer, error) {
+	ret := _m.Called(accountOriginID, page, size)
 
 	var r0 []model.Transfer
-	if rf, ok := ret.Get(0).(func(string) []model.Transfer); ok {
-		r0 = rf(accountOriginID)
+	if rf, ok := ret.Get(0).(func(string, int, int) []model.Transfer); ok {
+		r0 = rf(accountOriginID, page, size)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Transfer)
@@ -77,8 +77,8 @@ func (_m *Repository) GetAllWithdrawsOf(accountOriginID string) ([]model.Transfe
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(accountOriginID)
+	if rf, ok := ret.Get(1).(func(string, int, int) error); ok {
+		r1 = rf(accountOriginID, page, size)
 	} else {
 		r1 = ret.Error(1)
 	}

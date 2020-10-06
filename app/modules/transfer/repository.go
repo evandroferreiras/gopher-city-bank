@@ -17,8 +17,8 @@ type Repository interface {
 	CommitTransaction(ctx context.Context)
 	RollbackTransaction(ctx context.Context)
 	LogTransfer(ctx context.Context, transfer model.Transfer) error
-	GetAllWithdrawsOf(accountOriginID string) ([]model.Transfer, error)
-	GetAllDepositsTo(accountOriginID string) ([]model.Transfer, error)
+	GetAllWithdrawsOf(accountOriginID string, page, size int) ([]model.Transfer, error)
+	GetAllDepositsTo(accountOriginID string, page, size int) ([]model.Transfer, error)
 }
 
 // BuildRepository is a factory constructor for Transfer Repository
